@@ -112,48 +112,22 @@ const Profile = () => {
   };
 
   const handleDeleteShift = async (shift: Shift) => {
-    const reason = prompt('Silme sebebini belirtin (opsiyonel):');
-    
     if (!confirm('Bu nöbet teklifini silmek istediğinizden emin misiniz?')) {
       return;
     }
 
     try {
-      // Önce ilanı deleted_shifts tablosuna kopyala
-      const { error: insertError } = await supabase
-        .from('deleted_shifts')
-        .insert([
-          {
-            original_shift_id: shift.id,
-            seller_id: shift.seller_id,
-            buyer_id: shift.buyer_id,
-            title: shift.title,
-            description: shift.description,
-            price: shift.price,
-            shift_date: shift.shift_date,
-            shift_time: shift.shift_time,
-            duration: shift.duration,
-            location: shift.location,
-            status: shift.status,
-            deleted_by: user.id,
-            deletion_reason: reason || null,
-          }
-        ]);
-
-      if (insertError) throw insertError;
-
-      // Sonra shifts tablosundan sil
-      const { error: deleteError } = await supabase
+      const { error } = await supabase
         .from('shifts')
         .delete()
         .eq('id', shift.id)
         .eq('seller_id', user.id);
 
-      if (deleteError) throw deleteError;
+      if (error) throw error;
 
       toast({
         title: "Başarılı!",
-        description: "Nöbet teklifi başarıyla silindi ve arşivlendi.",
+        description: "Nöbet teklifi başarıyla silindi.",
       });
 
       fetchMyShifts(); // Refresh the list

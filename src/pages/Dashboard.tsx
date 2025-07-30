@@ -4,36 +4,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Plus, ShoppingCart, LogOut, User, Shield } from 'lucide-react';
+import { Plus, ShoppingCart, LogOut, User } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false);
+
 
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
-  useEffect(() => {
-    checkAdminRole();
-  }, []);
 
-  const checkAdminRole = async () => {
-    try {
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('user_id', user.id)
-        .single();
-
-      if (!error && profile?.role === 'admin') {
-        setIsAdmin(true);
-      }
-    } catch (error) {
-      console.error('Admin role check failed:', error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -103,30 +85,7 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Admin Panel */}
-        {isAdmin && (
-          <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4 text-center">Admin Paneli</h3>
-            <div className="max-w-md mx-auto">
-              <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/admin/deleted-shifts')}>
-                <CardHeader className="text-center">
-                  <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
-                    <Shield className="h-8 w-8 text-orange-600" />
-                  </div>
-                  <CardTitle className="text-xl">Silinen İlanları Yönet</CardTitle>
-                  <CardDescription>
-                    Silinen ilanları görüntüle ve kalıcı olarak sil
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full" size="lg" variant="outline">
-                    Admin Paneli
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        )}
+
 
       </main>
 
