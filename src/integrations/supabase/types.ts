@@ -142,6 +142,66 @@ export type Database = {
         }
         Relationships: []
       }
+      deleted_shifts: {
+        Row: {
+          id: string
+          original_shift_id: string
+          seller_id: string
+          buyer_id: string | null
+          title: string
+          description: string
+          price: number
+          shift_date: string
+          shift_time: string | null
+          duration: string | null
+          location: string | null
+          status: string
+          deleted_at: string
+          deleted_by: string
+          deletion_reason: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          original_shift_id: string
+          seller_id: string
+          buyer_id?: string | null
+          title: string
+          description: string
+          price: number
+          shift_date: string
+          shift_time?: string | null
+          duration?: string | null
+          location?: string | null
+          status: string
+          deleted_at?: string
+          deleted_by: string
+          deletion_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          original_shift_id?: string
+          seller_id?: string
+          buyer_id?: string | null
+          title?: string
+          description?: string
+          price?: number
+          shift_date?: string
+          shift_time?: string | null
+          duration?: string | null
+          location?: string | null
+          status?: string
+          deleted_at?: string
+          deleted_by?: string
+          deletion_reason?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

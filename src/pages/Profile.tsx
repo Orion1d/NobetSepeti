@@ -18,6 +18,9 @@ interface Shift {
   location: string | null;
   status: string;
   created_at: string;
+  seller_id: string;
+  buyer_id: string | null;
+  duration: string | null;
 }
 
 interface Profile {
@@ -106,23 +109,49 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteShift = async (shiftId: string) => {
+  const handleDeleteShift = async (shift: Shift) => {
+    const reason = prompt('Silme sebebini belirtin (opsiyonel):');
+    
     if (!confirm('Bu nöbet teklifini silmek istediğinizden emin misiniz?')) {
       return;
     }
 
     try {
-      const { error } = await supabase
+      // Önce ilanı deleted_shifts tablosuna kopyala
+      const { error: insertError } = await supabase
+        .from('deleted_shifts')
+        .insert([
+          {
+            original_shift_id: shift.id,
+            seller_id: shift.seller_id,
+            buyer_id: shift.buyer_id,
+            title: shift.title,
+            description: shift.description,
+            price: shift.price,
+            shift_date: shift.shift_date,
+            shift_time: shift.shift_time,
+            duration: shift.duration,
+            location: shift.location,
+            status: shift.status,
+            deleted_by: user.id,
+            deletion_reason: reason || null,
+          }
+        ]);
+
+      if (insertError) throw insertError;
+
+      // Sonra shifts tablosundan sil
+      const { error: deleteError } = await supabase
         .from('shifts')
         .delete()
-        .eq('id', shiftId)
+        .eq('id', shift.id)
         .eq('seller_id', user.id);
 
-      if (error) throw error;
+      if (deleteError) throw deleteError;
 
       toast({
         title: "Başarılı!",
-        description: "Nöbet teklifi başarıyla silindi.",
+        description: "Nöbet teklifi başarıyla silindi ve arşivlendi.",
       });
 
       fetchMyShifts(); // Refresh the list
@@ -333,7 +362,7 @@ const Profile = () => {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeleteShift(shift.id)}
+                              onClick={() => handleDeleteShift(shift)}
                               className="flex items-center gap-1"
                             >
                               <Trash2 className="h-3 w-3" />
