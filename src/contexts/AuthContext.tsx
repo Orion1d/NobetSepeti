@@ -100,6 +100,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       title: "Çıkış Yapıldı",
       description: "Başarıyla çıkış yaptınız.",
     });
+    // Ana sayfaya yönlendir
+    window.location.href = '/';
   };
 
   const value = {

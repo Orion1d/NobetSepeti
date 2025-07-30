@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar, Clock, MapPin, Key, MessageCircle, Edit, Trash2, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, MapPin, Key, MessageCircle, Edit, Trash2, Eye, LogOut } from 'lucide-react';
 
 interface Shift {
   id: string;
@@ -36,7 +36,7 @@ const Profile = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -300,6 +300,15 @@ const Profile = () => {
               >
                 <MessageCircle className="h-4 w-4" />
                 Mesajlarım
+              </Button>
+              
+              <Button 
+                onClick={signOut}
+                variant="destructive"
+                className="w-full flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Çıkış Yap
               </Button>
             </CardContent>
           </Card>
