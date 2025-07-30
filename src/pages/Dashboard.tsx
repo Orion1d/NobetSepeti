@@ -34,14 +34,14 @@ const Dashboard = () => {
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching purchased shifts:', error);
+        // Don't show toast for normal database responses
+      }
       setPurchasedShifts(data || []);
     } catch (error: any) {
-      toast({
-        title: "Hata",
-        description: "Satın alınan nöbetler yüklenirken bir hata oluştu.",
-        variant: "destructive",
-      });
+      console.error('Error in fetchPurchasedShifts:', error);
+      // Don't show toast for normal errors
     } finally {
       setLoading(false);
     }
