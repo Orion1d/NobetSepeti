@@ -64,10 +64,21 @@ const CreateShift = () => {
       return;
     }
 
-    if (parseFloat(price) < 0) {
+    if (!price || parseFloat(price) <= 0) {
       toast({
         title: "Hata",
-        description: "Fiyat negatif olamaz.",
+        description: "Geçerli bir fiyat girmelisiniz.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Fiyatın tam sayı olduğunu kontrol et
+    if (!Number.isInteger(parseFloat(price))) {
+      toast({
+        title: "Hata",
+        description: "Fiyat tam sayı olmalıdır (kuruş kısmı olmamalı).",
         variant: "destructive",
       });
       setLoading(false);
@@ -82,7 +93,7 @@ const CreateShift = () => {
           .update({
             title,
             description,
-            price: parseFloat(price),
+            price: parseInt(price),
             shift_date: shiftDate,
             shift_time: shiftTime || null,
             duration: duration || null,
@@ -106,7 +117,7 @@ const CreateShift = () => {
               seller_id: user.id,
               title,
               description,
-              price: parseFloat(price),
+              price: parseInt(price),
               shift_date: shiftDate,
               shift_time: shiftTime || null,
               duration: duration || null,
@@ -188,9 +199,16 @@ const CreateShift = () => {
                   <Input
                     id="price"
                     type="number"
-                    step="0.01"
+                    min="0"
+                    step="1"
                     value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    onChange={(e) => {
+                      // Sadece tam sayıları kabul et
+                      const value = e.target.value;
+                      if (value === '' || /^\d+$/.test(value)) {
+                        setPrice(value);
+                      }
+                    }}
                     required
                     placeholder="1500"
                   />
