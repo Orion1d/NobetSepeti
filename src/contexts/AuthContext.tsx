@@ -45,19 +45,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
-    // Add beforeunload event to ensure logout before leaving
-    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (session) {
-        event.preventDefault();
-        supabase.auth.signOut();
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
     return () => {
       subscription.unsubscribe();
-      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [session]);
 

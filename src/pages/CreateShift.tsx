@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,14 +20,33 @@ const CreateShift = () => {
   const [duration, setDuration] = useState('');
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [shiftId, setShiftId] = useState<string | null>(null);
   
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location_obj = useLocation();
   const { toast } = useToast();
 
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
+
+  // Check if we're in edit mode
+  useEffect(() => {
+    if (location_obj.state?.editMode && location_obj.state?.shiftData) {
+      const shiftData = location_obj.state.shiftData;
+      setEditMode(true);
+      setShiftId(shiftData.id);
+      setTitle(shiftData.title);
+      setDescription(shiftData.description);
+      setPrice(shiftData.price.toString());
+      setShiftDate(shiftData.shift_date);
+      setShiftTime(shiftData.shift_time || '');
+      setDuration(shiftData.duration || '');
+      setLocation(shiftData.location || '');
+    }
+  }, [location_obj.state]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,11 +75,11 @@ const CreateShift = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from('shifts')
-        .insert([
-          {
-            seller_id: user.id,
+      if (editMode && shiftId) {
+        // Update existing shift
+        const { error } = await supabase
+          .from('shifts')
+          .update({
             title,
             description,
             price: parseFloat(price),
@@ -68,21 +87,46 @@ const CreateShift = () => {
             shift_time: shiftTime || null,
             duration: duration || null,
             location,
-          }
-        ]);
+          })
+          .eq('id', shiftId)
+          .eq('seller_id', user.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      toast({
-        title: "Başarılı!",
-        description: "Nöbet teklifiniz oluşturuldu.",
-      });
+        toast({
+          title: "Başarılı!",
+          description: "Nöbet teklifiniz güncellendi.",
+        });
+      } else {
+        // Create new shift
+        const { error } = await supabase
+          .from('shifts')
+          .insert([
+            {
+              seller_id: user.id,
+              title,
+              description,
+              price: parseFloat(price),
+              shift_date: shiftDate,
+              shift_time: shiftTime || null,
+              duration: duration || null,
+              location,
+            }
+          ]);
 
-      navigate('/shift-offers');
+        if (error) throw error;
+
+        toast({
+          title: "Başarılı!",
+          description: "Nöbet teklifiniz oluşturuldu.",
+        });
+      }
+
+      navigate('/profile');
     } catch (error: any) {
       toast({
         title: "Hata",
-        description: error.message || "Nöbet teklifi oluşturulurken bir hata oluştu.",
+        description: error.message || "Nöbet teklifi işlemi sırasında bir hata oluştu.",
         variant: "destructive",
       });
     } finally {
@@ -102,7 +146,9 @@ const CreateShift = () => {
             <ArrowLeft className="h-4 w-4" />
             Geri Dön
           </Button>
-          <h1 className="text-2xl font-bold text-foreground">Nöbet Teklifi Oluştur</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            {editMode ? 'Nöbet Teklifini Düzenle' : 'Nöbet Teklifi Oluştur'}
+          </h1>
         </div>
       </header>
 
@@ -205,7 +251,10 @@ const CreateShift = () => {
                 disabled={loading}
                 size="lg"
               >
-                {loading ? 'Oluşturuluyor...' : 'Nöbet Teklifini Yayınla'}
+                {loading 
+                  ? (editMode ? 'Güncelleniyor...' : 'Oluşturuluyor...') 
+                  : (editMode ? 'Güncelle' : 'Nöbet Teklifini Yayınla')
+                }
               </Button>
             </form>
           </CardContent>

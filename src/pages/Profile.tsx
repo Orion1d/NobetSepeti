@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar, Clock, MapPin, Key, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, MapPin, Key, MessageCircle, Edit, Trash2, Eye } from 'lucide-react';
 
 interface Shift {
   id: string;
@@ -104,6 +104,54 @@ const Profile = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleDeleteShift = async (shiftId: string) => {
+    if (!confirm('Bu nöbet teklifini silmek istediğinizden emin misiniz?')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('shifts')
+        .delete()
+        .eq('id', shiftId)
+        .eq('seller_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Başarılı!",
+        description: "Nöbet teklifi başarıyla silindi.",
+      });
+
+      fetchMyShifts(); // Refresh the list
+    } catch (error: any) {
+      toast({
+        title: "Hata",
+        description: "Nöbet teklifi silinirken bir hata oluştu.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditShift = (shift: Shift) => {
+    // Navigate to edit page with shift data
+    navigate('/create-shift', { 
+      state: { 
+        editMode: true, 
+        shiftData: shift 
+      } 
+    });
+  };
+
+  const handleViewShift = (shift: Shift) => {
+    // Navigate to shift details page
+    navigate('/shift-offers', { 
+      state: { 
+        viewShift: shift.id 
+      } 
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -256,6 +304,43 @@ const Profile = () => {
                       
                       <div className="text-lg font-semibold text-primary">
                         {shift.price.toFixed(0)} TL
+                      </div>
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleViewShift(shift)}
+                          className="flex items-center gap-1"
+                        >
+                          <Eye className="h-3 w-3" />
+                          Görüntüle
+                        </Button>
+                        
+                        {shift.status === 'available' && (
+                          <>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditShift(shift)}
+                              className="flex items-center gap-1"
+                            >
+                              <Edit className="h-3 w-3" />
+                              Düzenle
+                            </Button>
+                            
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => handleDeleteShift(shift.id)}
+                              className="flex items-center gap-1"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                              İptal Et
+                            </Button>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
