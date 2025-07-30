@@ -12,6 +12,7 @@ import ShiftOffers from "./pages/ShiftOffers";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
 import AdminDeletedShifts from "./pages/AdminDeletedShifts";
+import TermsOfService from "./pages/TermsOfService";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/admin/deleted-shifts" element={<AdminDeletedShifts />} />
+            <Route path="/terms" element={<TermsOfService />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

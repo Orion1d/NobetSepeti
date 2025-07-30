@@ -203,12 +203,23 @@ const Auth = () => {
                    checked={agreeToTerms}
                    onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
                  />
-                 <Label 
-                   htmlFor="agreeToTerms" 
-                   className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                 >
-                   Kullanıcı sözleşmesini okudum ve kabul ediyorum
-                 </Label>
+                 <div className="flex items-center gap-1">
+                   <Label 
+                     htmlFor="agreeToTerms" 
+                     className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                   >
+                     Kullanıcı sözleşmesini okudum ve kabul ediyorum
+                   </Label>
+                   <Button
+                     type="button"
+                     variant="link"
+                     size="sm"
+                     className="text-xs p-0 h-auto font-normal text-primary hover:underline"
+                     onClick={() => navigate('/terms')}
+                   >
+                     (Oku)
+                   </Button>
+                 </div>
                </div>
              )}
              {validationError && (

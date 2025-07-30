@@ -156,7 +156,7 @@ const Index = () => {
               </CardHeader>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/terms')}>
               <CardHeader>
                 <div className="mx-auto w-12 h-12 bg-purple-500/10 rounded-full flex items-center justify-center mb-3">
                   <FileText className="h-6 w-6 text-purple-600" />
