@@ -77,8 +77,9 @@ const Auth = () => {
 
       const result = await signUp(email, password, fullName, phoneNumber, studentNumber, university, language);
       
-      if (!result.error && result.needsVerification) {
-        navigate('/verify-otp', { state: { email } });
+      if (!result.error) {
+        // Başarılı kayıt sonrası direkt dashboard'a yönlendir
+        navigate('/dashboard');
         return;
       }
     }

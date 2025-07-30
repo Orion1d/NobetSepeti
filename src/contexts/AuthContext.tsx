@@ -8,7 +8,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => Promise<{ error: any; needsVerification?: boolean }>;
+  signUp: (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -90,11 +90,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       return { error };
     } 
-    
-    // Check if user needs email verification
-    if (data.user && !data.session) {
-      return { error: null, needsVerification: true };
-    }
     
     return { error };
   };
