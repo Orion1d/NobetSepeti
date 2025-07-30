@@ -46,9 +46,9 @@ const Auth = () => {
       return { isValid: false, error: 'Öğrenci numarası ve isim alanları zorunludur.' };
     }
     
-    // Validate student number format (9 digits)
-    if (!/^\d{9}$/.test(studentNumber)) {
-      return { isValid: false, error: 'Öğrenci numarası 9 haneli olmalıdır.' };
+    // Validate student number format (10 digits)
+    if (!/^\d{10}$/.test(studentNumber)) {
+      return { isValid: false, error: 'Öğrenci numarası 10 haneli olmalıdır.' };
     }
     
     // Use actual student validation
@@ -144,9 +144,18 @@ const Auth = () => {
                      id="phoneNumber"
                      type="tel"
                      value={phoneNumber}
-                     onChange={(e) => setPhoneNumber(e.target.value)}
+                     onChange={(e) => {
+                       const value = e.target.value;
+                       // Sadece rakam ve + işareti kabul et
+                       const cleaned = value.replace(/[^\d+]/g, '');
+                       // Maksimum 13 karakter (+90 ile birlikte)
+                       if (cleaned.length <= 13) {
+                         setPhoneNumber(cleaned);
+                       }
+                     }}
                      required={!isLogin}
                      placeholder="+90 555 123 4567"
+                     maxLength={13}
                    />
                  </div>
                   <div className="space-y-2">

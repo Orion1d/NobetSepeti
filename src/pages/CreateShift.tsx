@@ -85,6 +85,17 @@ const CreateShift = () => {
       return;
     }
 
+    // Maksimum fiyat kontrolü
+    if (parseFloat(price) > 10000) {
+      toast({
+        title: "Hata",
+        description: "Fiyat maksimum 10.000 TL olabilir.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       if (editMode && shiftId) {
         // Update existing shift
@@ -200,13 +211,17 @@ const CreateShift = () => {
                     id="price"
                     type="number"
                     min="0"
+                    max="10000"
                     step="1"
                     value={price}
                     onChange={(e) => {
-                      // Sadece tam sayıları kabul et
+                      // Sadece tam sayıları kabul et ve maksimum 10000
                       const value = e.target.value;
                       if (value === '' || /^\d+$/.test(value)) {
-                        setPrice(value);
+                        const numValue = parseInt(value) || 0;
+                        if (numValue <= 10000) {
+                          setPrice(value);
+                        }
                       }
                     }}
                     required

@@ -19,7 +19,7 @@ export const validateStudent = (
   // Check Turkish students first
   if (trStudents[cleanStudentNumber]) {
     const expectedName = trStudents[cleanStudentNumber];
-    if (expectedName === cleanFullName) {
+    if (expectedName.toUpperCase() === cleanFullName) {
       return {
         isValid: true,
         studentName: expectedName,
@@ -36,7 +36,7 @@ export const validateStudent = (
   // Check English students
   if (enStudents[cleanStudentNumber]) {
     const expectedName = enStudents[cleanStudentNumber];
-    if (expectedName === cleanFullName) {
+    if (expectedName.toUpperCase() === cleanFullName) {
       return {
         isValid: true,
         studentName: expectedName,
