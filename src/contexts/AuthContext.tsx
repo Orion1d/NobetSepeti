@@ -8,7 +8,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => Promise<{ error: any; needsVerification?: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -51,47 +51,124 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [session]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (error) {
-      toast({
-        title: "Giriş Hatası",
-        description: error.message,
-        variant: "destructive",
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-    }
-    
-    return { error };
-  };
+      
+      if (error) {
+        toast({
+          title: "Giriş Hatası",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
 
-  const signUp = async (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone_number: phoneNumber,
-          student_number: studentNumber,
-          university: university,
-          language: language,
+      // Kullanıcı giriş yaptıktan sonra profil kontrolü yap
+      if (data.user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (profileError || !profile) {
+          // Profil yoksa otomatik çıkış yap
+          await supabase.auth.signOut();
+          toast({
+            title: "Hesap Hatası",
+            description: "Hesabınız bulunamadı. Lütfen tekrar kayıt olun.",
+            variant: "destructive",
+          });
+          return { error: { message: "Profil bulunamadı" } };
         }
       }
-    });
-    
-    if (error) {
+      
+      return { error: null };
+    } catch (error: any) {
       toast({
-        title: "Kayıt Hatası",
-        description: error.message,
+        title: "Giriş Hatası",
+        description: "Giriş yapılırken bir hata oluştu.",
         variant: "destructive",
       });
       return { error };
-    } 
-    
-    return { error };
+    }
+  };
+
+  const signUp = async (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            phone_number: phoneNumber,
+            student_number: studentNumber,
+            university: university,
+            language: language,
+          }
+        }
+      });
+      
+      if (error) {
+        toast({
+          title: "Kayıt Hatası",
+          description: error.message,
+          variant: "destructive",
+        });
+        return { error };
+      }
+
+      // Eğer kullanıcı oluşturulduysa profil tablosuna da ekle
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              user_id: data.user.id,
+              full_name: fullName,
+              phone_number: phoneNumber,
+              student_number: studentNumber,
+              university: university,
+              language: language,
+              role: 'doctor', // Varsayılan rol
+              is_phone_verified: false,
+            }
+          ]);
+
+        if (profileError) {
+          // Profil oluşturulamazsa auth kullanıcısını da sil
+          await supabase.auth.admin.deleteUser(data.user.id);
+          toast({
+            title: "Kayıt Hatası",
+            description: "Profil oluşturulamadı. Lütfen tekrar deneyin.",
+            variant: "destructive",
+          });
+          return { error: profileError };
+        }
+      }
+
+      // E-mail doğrulama gerekiyorsa kullanıcıya bilgi ver
+      if (data.user && !data.session) {
+        toast({
+          title: "E-mail Doğrulama Gerekli",
+          description: "E-mail adresinize doğrulama bağlantısı gönderildi. Lütfen e-mailinizi kontrol edin.",
+        });
+        return { error: null, needsVerification: true };
+      }
+      
+      return { error: null };
+    } catch (error: any) {
+      toast({
+        title: "Kayıt Hatası",
+        description: "Kayıt olurken bir hata oluştu.",
+        variant: "destructive",
+      });
+      return { error };
+    }
   };
 
   const signOut = async () => {

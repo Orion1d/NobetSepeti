@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,7 @@ const Auth = () => {
   
   const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     const mode = searchParams.get('mode');
@@ -78,9 +80,20 @@ const Auth = () => {
       const result = await signUp(email, password, fullName, phoneNumber, studentNumber, university, language);
       
       if (!result.error) {
-        // Başarılı kayıt sonrası direkt dashboard'a yönlendir
-        navigate('/dashboard');
-        return;
+        if (result.needsVerification) {
+          // E-mail doğrulama gerekiyorsa kullanıcıya bilgi ver
+          toast({
+            title: "E-mail Doğrulama Gerekli",
+            description: "E-mail adresinize doğrulama bağlantısı gönderildi. Lütfen e-mailinizi kontrol edin ve doğrulama bağlantısına tıklayın.",
+          });
+          // Ana sayfaya yönlendir
+          navigate('/');
+          return;
+        } else {
+          // Direkt giriş yapıldıysa dashboard'a yönlendir
+          navigate('/dashboard');
+          return;
+        }
       }
     }
 
