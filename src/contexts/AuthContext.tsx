@@ -68,6 +68,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, fullName: string, phoneNumber: string, studentNumber: string, university: string, language: string) => {
+    // Check if student number is already registered
+    const { data: existingProfile, error: checkError } = await supabase
+      .from('profiles')
+      .select('user_id')
+      .eq('student_number', studentNumber)
+      .single();
+
+    if (existingProfile) {
+      const error = { message: 'Bu öğrenci numarası ile daha önce kayıt olunmuş. Eğer hesabınız varsa giriş yapın.' };
+      toast({
+        title: "Kayıt Hatası",
+        description: error.message,
+        variant: "destructive",
+      });
+      return { error };
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
