@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { validateStudent } from '@/utils/studentValidation';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -41,19 +42,17 @@ const Auth = () => {
   }
 
   const validateStudentInfo = (studentNumber: string, fullName: string) => {
-    // TODO: Replace with actual validation against provided list
-    // For now, just checking if both fields are filled and student number is 10 digits
     if (!studentNumber || !fullName) {
-      return false;
+      return { isValid: false, error: 'Öğrenci numarası ve isim alanları zorunludur.' };
     }
     
-    // Validate student number is exactly 10 digits
-    if (!/^\d{10}$/.test(studentNumber)) {
-      return false;
+    // Validate student number format (9 digits)
+    if (!/^\d{9}$/.test(studentNumber)) {
+      return { isValid: false, error: 'Öğrenci numarası 9 haneli olmalıdır.' };
     }
     
-    // This will be replaced with actual list validation
-    return true;
+    // Use actual student validation
+    return validateStudent(studentNumber, fullName);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -65,8 +64,9 @@ const Auth = () => {
       await signIn(email, password);
     } else {
       // Validate student information
-      if (!validateStudentInfo(studentNumber, fullName)) {
-        setValidationError('Numaranız ve isminiz elimizdeki verilerle uyuşmuyor. Bir sıkıntı olduğunu düşünüyorsanız bizimle iletişime geçebilirsiniz.');
+      const validationResult = validateStudentInfo(studentNumber, fullName);
+      if (!validationResult.isValid) {
+        setValidationError(validationResult.error || 'Öğrenci bilgileri doğrulanamadı.');
         setLoading(false);
         return;
       }
