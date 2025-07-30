@@ -28,6 +28,7 @@ interface Profile {
   student_number: string;
   university: string;
   phone_number: string;
+  language: string;
 }
 
 const Profile = () => {
@@ -57,6 +58,7 @@ const Profile = () => {
         .single();
 
       if (error) throw error;
+      console.log('Profile data:', data); // Debug için
       setProfile(data);
     } catch (error: any) {
       toast({
@@ -241,7 +243,7 @@ const Profile = () => {
               <CardTitle>Kişisel Bilgiler</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {profile && (
+              {profile ? (
                 <>
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Ad Soyad</label>
@@ -256,6 +258,10 @@ const Profile = () => {
                     <p className="text-lg">{profile.university || 'Belirtilmemiş'}</p>
                   </div>
                   <div>
+                    <label className="text-sm font-medium text-muted-foreground">Öğrenim Dili</label>
+                    <p className="text-lg">{profile.language || 'Belirtilmemiş'}</p>
+                  </div>
+                  <div>
                     <label className="text-sm font-medium text-muted-foreground">Telefon</label>
                     <p className="text-lg">{profile.phone_number}</p>
                   </div>
@@ -264,6 +270,18 @@ const Profile = () => {
                     <p className="text-lg">{user.email}</p>
                   </div>
                 </>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-muted-foreground">Profil bilgileri yüklenemedi.</p>
+                  <Button 
+                    onClick={fetchProfile}
+                    variant="outline"
+                    size="sm"
+                    className="mt-2"
+                  >
+                    Tekrar Dene
+                  </Button>
+                </div>
               )}
               
               <Button 
