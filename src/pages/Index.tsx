@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stethoscope, Users, Calendar, TrendingUp, MessageCircle, Instagram, HelpCircle, Mail, FileText } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <header className="container mx-auto px-4 py-6">
@@ -12,10 +15,10 @@ const Index = () => {
             <h1 className="text-2xl font-bold text-foreground">Nöbet Sepeti</h1>
           </div>
           <div className="space-x-4">
-            <Button variant="outline" onClick={() => window.location.href = '/auth'}>
+            <Button variant="outline" onClick={() => navigate('/auth')}>
               Giriş Yap
             </Button>
-            <Button onClick={() => window.location.href = '/auth?mode=signup'}>
+            <Button onClick={() => navigate('/auth?mode=signup')}>
               Kayıt Ol
             </Button>
           </div>
@@ -31,7 +34,7 @@ const Index = () => {
             Nöbetinizi güvenle satın, başka doktorların nöbetlerini kolayca satın alın. 
             Esnek çalışma saatleri için ideal platform.
           </p>
-          <Button size="lg" className="px-8 py-3" onClick={() => window.location.href = '/auth'}>
+          <Button size="lg" className="px-8 py-3" onClick={() => navigate('/auth')}>
             Hemen Başla
           </Button>
         </div>
