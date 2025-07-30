@@ -91,6 +91,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return { error };
     } 
     
+    // If user was created successfully, create profile
+    if (data.user) {
+      try {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: data.user.id,
+            full_name: fullName,
+            phone_number: phoneNumber,
+            student_number: studentNumber,
+            university: university,
+            language: language,
+            role: 'doctor',
+            is_phone_verified: false,
+          });
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+          toast({
+            title: "Profil Oluşturma Hatası",
+            description: "Kullanıcı oluşturuldu ancak profil bilgileri kaydedilemedi.",
+            variant: "destructive",
+          });
+        }
+      } catch (profileError) {
+        console.error('Profile creation error:', profileError);
+      }
+    }
+    
     // Check if user needs email verification
     if (data.user && !data.session) {
       return { error: null, needsVerification: true };
