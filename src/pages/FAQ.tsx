@@ -18,12 +18,12 @@ const FAQ = () => {
     {
       id: 1,
       question: "Nöbet Sepeti nasıl çalışır?",
-      answer: "Nöbet Sepeti, doktorların nöbetlerini güvenli bir şekilde takas edebilecekleri bir platformdur. Satıcılar nöbetlerini listeler, alıcılar ise bu nöbetleri satın alabilir. Mesajlaşma sistemi ile detaylar belirlenir ve nöbet transferi gerçekleştirilir."
+      answer: "Nöbet Sepeti, internlerin nöbetlerini güvenli bir şekilde takas edebilecekleri bir platformdur. Satıcılar nöbetlerini listeler, alıcılar ise bu nöbetleri satın alabilir. Mesajlaşma sistemi ile detaylar belirlenir ve nöbet transferi gerçekleştirilir."
     },
     {
       id: 2,
       question: "Nöbet satışı için ne yapmam gerekiyor?",
-      answer: "Nöbetinizi satmak için önce hesap oluşturmanız gerekiyor. Ardından 'Nöbetimi Satmak İstiyorum' bölümünden nöbet detaylarınızı girin. Fiyat, tarih, saat ve konum bilgilerini belirtin. Teklifiniz onaylandıktan sonra diğer doktorlar görebilecek."
+      answer: "Nöbetinizi satmak için önce hesap oluşturmanız gerekiyor. Ardından 'Nöbetimi Satmak İstiyorum' bölümünden nöbet detaylarınızı girin. Fiyat, tarih, saat ve konum bilgilerini belirtin. Teklifiniz onaylandıktan sonra diğer internler görebilecek."
     },
     {
       id: 3,

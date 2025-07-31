@@ -1,11 +1,11 @@
 # Nöbet Sepeti
 
-Türk doktorları için nöbet takası platformu. Doktorlar nöbetlerini güvenle satabilir ve başka doktorların nöbetlerini kolayca satın alabilir.
+Türk internleri için nöbet takası platformu. İnternler nöbetlerini güvenle satabilir ve başka internlerin nöbetlerini kolayca satın alabilir.
 
 ## 🌟 Özellikler
 
-- **Nöbet Satışı**: Çalışamayacağınız nöbetlerinizi diğer doktorlara satın
-- **Nöbet Satın Alma**: Ekstra gelir için diğer doktorların nöbetlerini satın alın
+- **Nöbet Satışı**: Çalışamayacağınız nöbetlerinizi diğer internlere satın
+- **Nöbet Satın Alma**: Ekstra gelir için diğer internlerin nöbetlerini satın alın
 - **Gerçek Zamanlı Mesajlaşma**: Alıcı ve satıcı arasında güvenli iletişim
 - **Durum Takibi**: Nöbet durumlarını (müsait, beklemede, tamamlandı, iptal) takip edin
 - **Zaman Sınırı**: Nöbet tarihinden 1 gün sonra mesajlaşma kapanır, ancak geçmiş mesajlar korunur
@@ -128,7 +128,7 @@ Domain: `nobetsepeti.com`
 
 ## 📱 Kullanım
 
-### Doktor Kaydı
+### İntern Kaydı
 1. Ana sayfada "Kayıt Ol" butonuna tıklayın
 2. E-mail ve şifre ile hesap oluşturun
 3. Profil bilgilerinizi doldurun
@@ -194,4 +194,4 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 ---
 
-**Nöbet Sepeti** - Doktorlar için güvenli nöbet takası platformu 🏥
+**Nöbet Sepeti** - İnternler için güvenli nöbet takası platformu 🏥

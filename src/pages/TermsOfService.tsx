@@ -37,20 +37,20 @@ const TermsOfService = () => {
             <div className="space-y-6">
               <section>
                 <h2 className="text-lg font-semibold mb-3">1. Genel Hükümler</h2>
-                <p className="text-muted-foreground mb-4">
-                  Bu kullanıcı sözleşmesi ("Sözleşme"), Nöbet Sepeti platformunu ("Platform") kullanarak 
-                  nöbet alım-satım işlemleri yapmak isteyen kullanıcılar ile platform arasındaki hak ve 
-                  yükümlülükleri düzenler.
-                </p>
-                <p className="text-muted-foreground">
-                  Platformu kullanarak, bu sözleşmenin tüm şartlarını kabul etmiş sayılırsınız.
-                </p>
+                        <p className="text-muted-foreground mb-4">
+          Bu kullanıcı sözleşmesi ("Sözleşme"), Nöbet Sepeti platformunu ("Platform") kullanarak
+          nöbet alım-satım işlemleri yapmak isteyen internler ile platform arasındaki hak ve
+          yükümlülükleri düzenler.
+        </p>
+        <p className="text-muted-foreground">
+          Platformu kullanarak, bu sözleşmenin tüm şartlarını kabul etmiş sayılırsınız.
+        </p>
               </section>
 
               <section>
                 <h2 className="text-lg font-semibold mb-3">2. Hizmet Tanımı</h2>
                 <p className="text-muted-foreground mb-4">
-                  Nöbet Sepeti, tıp fakültesi öğrencileri ve doktorlar arasında nöbet alım-satım işlemlerini 
+                  Nöbet Sepeti, tıp fakültesi öğrencileri ve internler arasında nöbet alım-satım işlemlerini 
                   kolaylaştırmak amacıyla kurulmuş bir platformdur.
                 </p>
                 <ul className="list-disc list-inside text-muted-foreground space-y-2">

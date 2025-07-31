@@ -29,10 +29,10 @@ const Index = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-16">
           <h2 className="text-5xl font-bold mb-6 text-foreground">
-            Doktorlar İçin <span className="text-primary">Nöbet Sepeti</span>
+            İnternler İçin <span className="text-primary">Nöbet Sepeti</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Nöbetinizi güvenle satın, başka doktorların nöbetlerini kolayca satın alın. 
+            Nöbetinizi güvenle satın, başka internlerin nöbetlerini kolayca satın alın. 
             Esnek çalışma saatleri için ideal platform.
           </p>
           <Button size="lg" className="px-8 py-3" onClick={() => navigate('/auth')}>
@@ -48,7 +48,7 @@ const Index = () => {
               </div>
               <CardTitle>Nöbet Sat</CardTitle>
               <CardDescription>
-                Çalışamayacağınız nöbetlerinizi diğer doktorlara satın
+                Çalışamayacağınız nöbetlerinizi diğer internlere satın
               </CardDescription>
             </CardHeader>
           </Card>
@@ -60,7 +60,7 @@ const Index = () => {
               </div>
               <CardTitle>Nöbet Al</CardTitle>
               <CardDescription>
-                Ekstra gelir için diğer doktorların nöbetlerini satın alın
+                Ekstra gelir için diğer internlerin nöbetlerini satın alın
               </CardDescription>
             </CardHeader>
           </Card>
