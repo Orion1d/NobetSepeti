@@ -180,7 +180,7 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 ## 📞 İletişim
 
 - **Website**: [nobetsepeti.com](https://nobetsepeti.com)
-- **Email**: info@nobetsepeti.com
+- **Email**: nobetsepeti@gmail.com
 - **Telegram**: [Telegram Grubu](https://t.me/nobetsepeti)
 
 ## 🚀 Roadmap

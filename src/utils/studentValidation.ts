@@ -28,7 +28,7 @@ export const validateStudent = (
     } else {
       return {
         isValid: false,
-        error: `Öğrenci numarası doğru ancak isim uyuşmuyor. Beklenen: ${expectedName}`
+        error: `Öğrenci numarası doğru ancak isim uyuşmuyor. İsminizi büyük harflerle yazdığınızdan emin olun.`
       };
     }
   }
@@ -45,7 +45,7 @@ export const validateStudent = (
     } else {
       return {
         isValid: false,
-        error: `Student number is correct but name doesn't match. Expected: ${expectedName}`
+        error: `Student number is correct but name doesn't match. Please write your name in capital letters.`
       };
     }
   }

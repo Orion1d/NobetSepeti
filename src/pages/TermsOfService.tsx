@@ -151,7 +151,7 @@ const TermsOfService = () => {
               <section>
                 <h2 className="text-lg font-semibold mb-3">10. İletişim</h2>
                 <p className="text-muted-foreground">
-                  Sorularınız için: <a href="mailto:info@nobetsepeti.com" className="text-primary hover:underline">info@nobetsepeti.com</a>
+                  Sorularınız için: <a href="mailto:nobetsepeti@gmail.com" className="text-primary hover:underline">nobetsepeti@gmail.com</a>
                 </p>
               </section>
 

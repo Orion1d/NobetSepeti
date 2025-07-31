@@ -124,7 +124,7 @@ const FAQ = () => {
                 Burada bulamadığınız sorularınız için bizimle iletişime geçin.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button onClick={() => window.open('mailto:info@nobetsepeti.com', '_blank')}>
+                                 <Button onClick={() => window.open('mailto:nobetsepeti@gmail.com', '_blank')}>
                   E-posta Gönder
                 </Button>
                 <Button variant="outline" onClick={() => window.open('https://t.me/nobetsepeti', '_blank')}>

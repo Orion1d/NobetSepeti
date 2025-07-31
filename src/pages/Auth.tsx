@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { validateStudent } from '@/utils/studentValidation';
@@ -24,6 +24,7 @@ const Auth = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [validationError, setValidationError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   
   const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
@@ -135,8 +136,11 @@ const Auth = () => {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required={!isLogin}
-                    placeholder="Dr. Ahmet Yılmaz"
+                    placeholder="AHMET YILMAZ"
                   />
+                  <p className="text-xs text-muted-foreground">
+                    İsminizi büyük harflerle yazın (örn: AHMET YILMAZ)
+                  </p>
                 </div>
                  <div className="space-y-2">
                    <Label htmlFor="phoneNumber">Telefon Numarası</Label>
@@ -209,14 +213,29 @@ const Auth = () => {
             </div>
              <div className="space-y-2">
                <Label htmlFor="password">Şifre</Label>
-               <Input
-                 id="password"
-                 type="password"
-                 value={password}
-                 onChange={(e) => setPassword(e.target.value)}
-                 required
-                 placeholder="••••••••"
-               />
+               <div className="relative">
+                 <Input
+                   id="password"
+                   type={showPassword ? "text" : "password"}
+                   value={password}
+                   onChange={(e) => setPassword(e.target.value)}
+                   required
+                   placeholder="••••••••"
+                 />
+                 <Button
+                   type="button"
+                   variant="ghost"
+                   size="sm"
+                   className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                   onClick={() => setShowPassword(!showPassword)}
+                 >
+                   {showPassword ? (
+                     <EyeOff className="h-4 w-4" />
+                   ) : (
+                     <Eye className="h-4 w-4" />
+                   )}
+                 </Button>
+               </div>
              </div>
              {!isLogin && (
                <div className="flex items-center space-x-2">

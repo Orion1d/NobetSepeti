@@ -19,7 +19,7 @@ const Footer = () => {
         break;
       case 'contact':
         // TODO: Create contact page or open email
-        window.open('mailto:info@nobetsepeti.com', '_blank');
+        window.open('mailto:nobetsepeti@gmail.com', '_blank');
         break;
       case 'terms':
         navigate('/terms');
