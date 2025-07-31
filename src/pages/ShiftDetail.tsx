@@ -214,14 +214,11 @@ const ShiftDetail = () => {
                     </div>
                   )}
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-green-600 mb-2">
-                    {shift.price.toFixed(0)} TL
-                  </div>
-                  <Badge variant={shift.status === 'available' ? 'default' : 'secondary'}>
-                    {shift.status === 'available' ? 'Müsait' : 'Satıldı'}
-                  </Badge>
-                </div>
+                                 <div className="text-right">
+                   <div className="text-3xl font-bold text-green-600 mb-2">
+                     {shift.price.toFixed(0)} TL
+                   </div>
+                 </div>
               </div>
             </CardHeader>
             
@@ -273,13 +270,9 @@ const ShiftDetail = () => {
                         <div className="font-medium">{sellerProfile.full_name}</div>
                       </div>
                       
-                      <div className="flex items-center gap-3">
-                        <MapPin className="h-5 w-5 text-muted-foreground" />
-                        <div className="font-medium">{sellerProfile.university}</div>
-                      </div>
-                      
-                                             <div className="text-sm text-muted-foreground">
-                         İntern
+                                             <div className="flex items-center gap-3">
+                         <MapPin className="h-5 w-5 text-muted-foreground" />
+                         <div className="font-medium">{sellerProfile.university}</div>
                        </div>
                     </div>
                   )}

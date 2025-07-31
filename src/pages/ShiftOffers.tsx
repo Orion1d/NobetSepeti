@@ -338,11 +338,6 @@ const ShiftOffers = () => {
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start gap-3">
                       <CardTitle className="text-lg flex-1 pr-20">{shift.title}</CardTitle>
-                      <div className="flex flex-col items-end gap-2 min-w-0">
-                        <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold bg-green-100 text-green-800 shadow-sm">
-                          {shift.price.toFixed(0)} TL
-                        </div>
-                      </div>
                     </div>
                   </CardHeader>
                   
@@ -375,6 +370,13 @@ const ShiftOffers = () => {
                       )}
                     </div>
 
+                    {/* Price Display */}
+                    <div className="flex justify-center mb-3">
+                      <div className="inline-flex items-center rounded-full border-2 px-4 py-2 text-lg font-bold bg-green-100 text-green-800 shadow-md">
+                        {shift.price.toFixed(0)} TL
+                      </div>
+                    </div>
+                    
                     {/* Action Buttons */}
                     <div className="space-y-2">
                       <Button 
