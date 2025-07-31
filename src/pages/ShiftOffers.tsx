@@ -110,7 +110,7 @@ const ShiftOffers = () => {
 
       toast({
         title: "Başarılı!",
-        description: "Nöbet teklifi kabul edildi. Satıcı ile iletişime geçebilirsiniz.",
+        description: "Nöbet ilanı kabul edildi. Satıcı ile iletişime geçebilirsiniz.",
       });
 
       fetchShifts(); // Refresh the list
@@ -298,13 +298,13 @@ const ShiftOffers = () => {
           <div className="text-center py-12">
             <TrendingUp className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">
-              Henüz müsait nöbet teklifi yok
+              Henüz müsait nöbet ilanı yok
             </h3>
             <p className="text-muted-foreground mb-6">
-              İlk nöbet teklifini siz oluşturun!
+              İlk nöbet ilanını siz oluşturun!
             </p>
             <Button onClick={() => navigate('/create-shift')}>
-              Nöbet Teklifi Oluştur
+              Nöbet İlanı Oluştur
             </Button>
           </div>
         ) : (

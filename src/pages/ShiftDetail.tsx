@@ -97,7 +97,7 @@ const ShiftDetail = () => {
 
       toast({
         title: "Başarılı!",
-        description: "Nöbet teklifi kabul edildi. Satıcı ile iletişime geçebilirsiniz.",
+        description: "Nöbet ilanı kabul edildi. Satıcı ile iletişime geçebilirsiniz.",
       });
 
       navigate('/messages');

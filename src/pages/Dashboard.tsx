@@ -103,12 +103,12 @@ const Dashboard = () => {
               </div>
               <CardTitle className="text-xl">Nöbetimi Satmak İstiyorum</CardTitle>
               <CardDescription>
-                Nöbet teklifinizi oluşturun ve diğer internlere satın
+                Nöbet ilanınızı oluşturun ve diğer internlere satın
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Button className="w-full" size="lg">
-                Nöbet Teklifi Oluştur
+                Nöbet İlanı Oluştur
               </Button>
             </CardContent>
           </Card>

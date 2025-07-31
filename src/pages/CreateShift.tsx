@@ -133,7 +133,7 @@ const CreateShift = () => {
 
         toast({
           title: "Başarılı!",
-          description: "Nöbet teklifiniz güncellendi.",
+          description: "Nöbet ilanınız güncellendi.",
         });
       } else {
         // Create new shift
@@ -156,7 +156,7 @@ const CreateShift = () => {
 
         toast({
           title: "Başarılı!",
-          description: "Nöbet teklifiniz oluşturuldu.",
+          description: "Nöbet ilanınız oluşturuldu.",
         });
       }
 
@@ -164,7 +164,7 @@ const CreateShift = () => {
     } catch (error: any) {
       toast({
         title: "Hata",
-        description: error.message || "Nöbet teklifi işlemi sırasında bir hata oluştu.",
+        description: error.message || "Nöbet ilanı işlemi sırasında bir hata oluştu.",
         variant: "destructive",
       });
     } finally {
@@ -332,7 +332,7 @@ const CreateShift = () => {
               >
                 {loading 
                   ? (editMode ? 'Güncelleniyor...' : 'Oluşturuluyor...') 
-                  : (editMode ? 'Güncelle' : 'Nöbet Teklifini Yayınla')
+                  : (editMode ? 'Güncelle' : 'Nöbet İlanını Yayınla')
                 }
               </Button>
             </form>

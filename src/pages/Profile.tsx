@@ -112,7 +112,7 @@ const Profile = () => {
   };
 
   const handleDeleteShift = async (shift: Shift) => {
-    if (!confirm('Bu nöbet teklifini silmek istediğinizden emin misiniz?')) {
+    if (!confirm('Bu nöbet ilanını silmek istediğinizden emin misiniz?')) {
       return;
     }
 
@@ -134,7 +134,7 @@ const Profile = () => {
       
       toast({
         title: "Başarılı!",
-        description: "Nöbet teklifi başarıyla silindi.",
+        description: "Nöbet ilanı başarıyla silindi.",
       });
 
       fetchMyShifts(); // Refresh the list
@@ -142,7 +142,7 @@ const Profile = () => {
       console.error('Delete failed:', error);
       toast({
         title: "Hata",
-        description: `Nöbet teklifi silinirken bir hata oluştu: ${error.message}`,
+        description: `Nöbet ilanı silinirken bir hata oluştu: ${error.message}`,
         variant: "destructive",
       });
     }
@@ -303,7 +303,7 @@ const Profile = () => {
             <CardContent>
               {myShifts.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-muted-foreground mb-4">Henüz nöbet teklifiniz yok.</p>
+                  <p className="text-muted-foreground mb-4">Henüz nöbet ilanınız yok.</p>
                   <Button onClick={() => navigate('/create-shift')}>
                     İlk Teklifinizi Oluşturun
                   </Button>
