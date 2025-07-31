@@ -117,14 +117,21 @@ const Profile = () => {
     }
 
     try {
+      console.log('Deleting shift:', shift.id, 'User ID:', user?.id);
+      
       const { error } = await supabase
         .from('shifts')
         .delete()
         .eq('id', shift.id)
         .eq('seller_id', user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
 
+      console.log('Shift deleted successfully');
+      
       toast({
         title: "Başarılı!",
         description: "Nöbet teklifi başarıyla silindi.",
@@ -132,9 +139,10 @@ const Profile = () => {
 
       fetchMyShifts(); // Refresh the list
     } catch (error: any) {
+      console.error('Delete failed:', error);
       toast({
         title: "Hata",
-        description: "Nöbet teklifi silinirken bir hata oluştu.",
+        description: `Nöbet teklifi silinirken bir hata oluştu: ${error.message}`,
         variant: "destructive",
       });
     }
