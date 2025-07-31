@@ -15,7 +15,7 @@ interface Shift {
   price: number;
   shift_date: string;
   shift_time: string | null;
-  location: string | null;
+  medical_field: string | null;
   status: string;
   created_at: string;
   seller_id: string;
@@ -324,10 +324,10 @@ const Profile = () => {
                           </div>
                         )}
                         
-                        {shift.location && (
+                        {shift.duration && (
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3" />
-                            <span>{shift.location}</span>
+                            <Clock className="h-3 w-3" />
+                            <span>{shift.duration}</span>
                           </div>
                         )}
                       </div>

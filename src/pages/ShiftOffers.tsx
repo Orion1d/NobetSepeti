@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar, Clock, MapPin, TrendingUp, CheckCircle, XCircle, AlertCircle, Clock as ClockIcon, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, TrendingUp, CheckCircle, XCircle, AlertCircle, Clock as ClockIcon, MessageCircle, Heart, Brain, Eye, Baby, Stethoscope, Pill, Activity, Sparkles } from 'lucide-react';
 
 interface Shift {
   id: string;
@@ -17,7 +17,7 @@ interface Shift {
   shift_date: string;
   shift_time: string | null;
   duration: string | null;
-  location: string | null;
+  medical_field: string | null;
   status: string;
   seller_id: string;
   buyer_id: string | null;
@@ -25,6 +25,18 @@ interface Shift {
 }
 
 type ShiftStatus = 'available' | 'pending' | 'completed' | 'cancelled';
+
+// Tıp alanları ve renkleri
+const medicalFields = [
+  { value: 'acil', label: 'Acil Servis', color: 'bg-red-500', icon: Activity },
+  { value: 'kardiyoloji', label: 'Kardiyoloji', color: 'bg-red-600', icon: Heart },
+  { value: 'nöroloji', label: 'Nöroloji', color: 'bg-purple-600', icon: Brain },
+  { value: 'göz', label: 'Göz Hastalıkları', color: 'bg-blue-500', icon: Eye },
+  { value: 'kadın', label: 'Kadın Hastalıkları', color: 'bg-pink-500', icon: Baby },
+  { value: 'ortodonti', label: 'Ortodonti', color: 'bg-teal-500', icon: Sparkles },
+  { value: 'dahiliye', label: 'Dahiliye', color: 'bg-green-600', icon: Stethoscope },
+  { value: 'farmakoloji', label: 'Farmakoloji', color: 'bg-orange-500', icon: Pill },
+];
 
 const ShiftOffers = () => {
   const [shifts, setShifts] = useState<Shift[]>([]);
@@ -214,6 +226,25 @@ const ShiftOffers = () => {
     return timeString.slice(0, 5); // Format HH:MM
   };
 
+  const getRemainingTime = (shiftDate: string) => {
+    const now = new Date();
+    const shiftDateObj = new Date(shiftDate);
+    const diffTime = shiftDateObj.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'Geçmiş';
+    if (diffDays === 0) return 'Bugün';
+    if (diffDays === 1) return 'Yarın';
+    if (diffDays <= 3) return `Son ${diffDays} gün`;
+    if (diffDays <= 7) return `Son ${diffDays} gün`;
+    return `${diffDays} gün kaldı`;
+  };
+
+  const getMedicalFieldInfo = (fieldValue: string | null) => {
+    if (!fieldValue) return null;
+    return medicalFields.find(field => field.value === fieldValue);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -274,88 +305,113 @@ const ShiftOffers = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {shifts.map((shift) => (
-              <Card key={shift.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg">{shift.title}</CardTitle>
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold bg-green-100 text-green-800">
-                        {shift.price.toFixed(0)} TL
+            {shifts.map((shift) => {
+              const medicalFieldInfo = getMedicalFieldInfo(shift.medical_field);
+              const remainingTime = getRemainingTime(shift.shift_date);
+              
+              return (
+                <Card 
+                  key={shift.id} 
+                  className={`hover:shadow-lg transition-shadow relative overflow-hidden ${
+                    medicalFieldInfo ? `border-l-4 ${medicalFieldInfo.color.replace('bg-', 'border-')}` : ''
+                  }`}
+                >
+                  {/* Medical Field Badge */}
+                  {medicalFieldInfo && (
+                    <div className="absolute top-2 right-2">
+                      <div className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-white ${medicalFieldInfo.color}`}>
+                        {(() => {
+                          const IconComponent = medicalFieldInfo.icon;
+                          return <IconComponent className="h-3 w-3" />;
+                        })()}
+                        {medicalFieldInfo.label}
                       </div>
-                      {getStatusBadge(shift.status)}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground text-sm line-clamp-3">
-                    {shift.description}
-                  </p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>{formatDate(shift.shift_date)}</span>
-                    </div>
-                    
-                    {shift.shift_time && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>{formatTime(shift.shift_time)}</span>
-                      </div>
-                    )}
-                    
-                    {shift.duration && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>{shift.duration}</span>
-                      </div>
-                    )}
-                    
-
-                  </div>
-
-                  {/* Action Buttons */}
-                  {shift.status === 'available' && shift.seller_id !== user.id && (
-                    <div className="space-y-2">
-                      <Button 
-                        className="w-full" 
-                        onClick={() => handleBuyShift(shift.id)}
-                      >
-                        Nöbeti Satın Al
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        className="w-full flex items-center gap-2"
-                        onClick={() => navigate('/messages')}
-                      >
-                        <MessageCircle className="h-4 w-4" />
-                        Mesaj Gönder
-                      </Button>
-                    </div>
-                  )}
-                  
-                  {shift.seller_id === user.id && shift.status === 'available' && (
-                    <div className="space-y-2">
-                      <div className="inline-flex items-center justify-center w-full rounded-full border px-2.5 py-0.5 text-xs font-semibold">
-                        Sizin teklifiniz
-                      </div>
-                      <Button 
-                        variant="outline"
-                        className="w-full flex items-center gap-2"
-                        onClick={() => navigate('/messages')}
-                      >
-                        <MessageCircle className="h-4 w-4" />
-                        Mesajları Görüntüle
-                      </Button>
                     </div>
                   )}
 
-                  {/* Status Actions */}
-                  {getStatusActions(shift)}
-                </CardContent>
-              </Card>
-            ))}
+                  <CardHeader className="pb-3">
+                    <div className="flex justify-between items-start gap-2">
+                      <CardTitle className="text-lg flex-1">{shift.title}</CardTitle>
+                      <div className="flex flex-col items-end gap-2">
+                        <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold bg-green-100 text-green-800">
+                          {shift.price.toFixed(0)} TL
+                        </div>
+                        {getStatusBadge(shift.status)}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground text-sm line-clamp-3">
+                      {shift.description}
+                    </p>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <span>{formatDate(shift.shift_date)}</span>
+                        <span className="text-xs text-orange-600 font-medium">
+                          ({remainingTime})
+                        </span>
+                      </div>
+                      
+                      {shift.shift_time && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span>{formatTime(shift.shift_time)}</span>
+                        </div>
+                      )}
+                      
+                      {shift.duration && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <ClockIcon className="h-4 w-4 text-muted-foreground" />
+                          <span>{shift.duration}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    {shift.status === 'available' && shift.seller_id !== user.id && (
+                      <div className="space-y-2">
+                        <Button 
+                          className="w-full" 
+                          onClick={() => handleBuyShift(shift.id)}
+                        >
+                          Nöbeti Satın Al
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          className="w-full flex items-center gap-2"
+                          onClick={() => navigate('/messages')}
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                          Mesaj Gönder
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {shift.seller_id === user.id && shift.status === 'available' && (
+                      <div className="space-y-2">
+                        <div className="inline-flex items-center justify-center w-full rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                          Sizin teklifiniz
+                        </div>
+                        <Button 
+                          variant="outline"
+                          className="w-full flex items-center gap-2"
+                          onClick={() => navigate('/messages')}
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                          Mesajları Görüntüle
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Status Actions */}
+                    {getStatusActions(shift)}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
       </main>
