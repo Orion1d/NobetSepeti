@@ -12,6 +12,7 @@ import ShiftOffers from "./pages/ShiftOffers";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
 import TermsOfService from "./pages/TermsOfService";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
 
             <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/faq" element={<FAQ />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

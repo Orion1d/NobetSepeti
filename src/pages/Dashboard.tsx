@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, ShoppingCart, LogOut, User, Package, MessageCircle, Calendar, Clock, MapPin } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -211,33 +212,7 @@ const Dashboard = () => {
 
       </main>
 
-      {/* Footer */}
-      <footer className="mt-16 border-t border-border">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="bg-card border border-border rounded-lg p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-              <h4 className="font-semibold text-foreground">Telegram Grubu</h4>
-              <p className="text-sm text-muted-foreground mt-1">Topluluk sohbeti</p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-              <h4 className="font-semibold text-foreground">Instagram</h4>
-              <p className="text-sm text-muted-foreground mt-1">Güncellemeler</p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-              <h4 className="font-semibold text-foreground">SSS</h4>
-              <p className="text-sm text-muted-foreground mt-1">Sık sorulan sorular</p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-              <h4 className="font-semibold text-foreground">İletişim</h4>
-              <p className="text-sm text-muted-foreground mt-1">Bize ulaşın</p>
-            </div>
-            <div className="bg-card border border-border rounded-lg p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-              <h4 className="font-semibold text-foreground">Kullanıcı Sözleşmesi</h4>
-              <p className="text-sm text-muted-foreground mt-1">Şartlar ve koşullar</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
