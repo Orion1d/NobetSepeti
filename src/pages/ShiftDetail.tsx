@@ -27,7 +27,6 @@ interface Shift {
 interface SellerProfile {
   full_name: string;
   university: string;
-  student_number: string;
 }
 
 const ShiftDetail = () => {
@@ -62,7 +61,7 @@ const ShiftDetail = () => {
       // Fetch seller profile
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('full_name, university, student_number')
+        .select('full_name, university')
         .eq('user_id', shiftData.seller_id)
         .single();
 
@@ -202,7 +201,7 @@ const ShiftDetail = () => {
                   {medicalFieldInfo && (
                     <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-white shadow-md mb-3"
                          style={{ backgroundColor: medicalFieldInfo.color }}>
-                      <MedicalFieldIcon field={shift.medical_field} />
+                                             <MedicalFieldIcon field={shift.medical_field} variant="white" />
                       <span>{medicalFieldInfo.color === '#1976d2' ? 'Göğüs Hastalıkları' : 
                              medicalFieldInfo.color === '#43a047' ? 'Dahiliye' : 
                              medicalFieldInfo.color === '#c2185b' ? 'Kardiyoloji' :
@@ -279,9 +278,9 @@ const ShiftDetail = () => {
                         <div className="font-medium">{sellerProfile.university}</div>
                       </div>
                       
-                      <div className="text-sm text-muted-foreground">
-                        Öğrenci No: {sellerProfile.student_number}
-                      </div>
+                                             <div className="text-sm text-muted-foreground">
+                         İntern
+                       </div>
                     </div>
                   )}
                 </div>

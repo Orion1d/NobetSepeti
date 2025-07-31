@@ -14,14 +14,14 @@ const fieldIconMap: Record<string, { icon: string; color: string }> = {
   genel:        { icon: "surgical", color: "#ffa000" },
 };
 
-export function MedicalFieldIcon({ field }: { field: string }) {
+export function MedicalFieldIcon({ field, variant = "white" }: { field: string; variant?: "white" | "black" }) {
   const info = fieldIconMap[field];
   if (!info) return null;
   return (
     <span
       className="material-symbols-rounded"
       style={{
-        color: "#ffffff", // Sabit beyaz renk
+        color: variant === "white" ? "#ffffff" : "#000000",
         fontSize: 18,
         verticalAlign: "middle",
         marginRight: 4,

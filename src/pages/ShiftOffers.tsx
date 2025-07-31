@@ -337,12 +337,11 @@ const ShiftOffers = () => {
 
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start gap-3">
-                      <CardTitle className="text-lg flex-1 pr-4">{shift.title}</CardTitle>
+                      <CardTitle className="text-lg flex-1 pr-20">{shift.title}</CardTitle>
                       <div className="flex flex-col items-end gap-2 min-w-0">
                         <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold bg-green-100 text-green-800 shadow-sm">
                           {shift.price.toFixed(0)} TL
                         </div>
-                        {getStatusBadge(shift.status)}
                       </div>
                     </div>
                   </CardHeader>
