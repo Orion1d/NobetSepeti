@@ -123,14 +123,11 @@ const FAQ = () => {
               <p className="text-muted-foreground mb-4">
                 Burada bulamadığınız sorularınız için bizimle iletişime geçin.
               </p>
-              <div className="flex gap-4 justify-center">
-                                 <Button onClick={() => window.open('mailto:nobetsepeti@gmail.com', '_blank')}>
-                  E-posta Gönder
-                </Button>
-                <Button variant="outline" onClick={() => window.open('https://t.me/nobetsepeti', '_blank')}>
-                  Telegram Grubu
-                </Button>
-              </div>
+                             <div className="flex gap-4 justify-center">
+                 <Button onClick={() => window.open('mailto:nobetsepeti@gmail.com', '_blank')}>
+                   E-posta Gönder
+                 </Button>
+               </div>
             </Card>
           </div>
         </div>
