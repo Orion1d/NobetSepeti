@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowLeft, Calendar, Clock, TrendingUp, CheckCircle, XCircle, AlertCircle, Clock as ClockIcon, MessageCircle, Heart, Brain, Eye, Baby, Stethoscope, Pill, Activity, Sparkles } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, TrendingUp, CheckCircle, XCircle, AlertCircle, Clock as ClockIcon, MessageCircle } from 'lucide-react';
+import { MedicalFieldIcon, fieldIconMap } from '@/components/MedicalFieldIcon';
 
 interface Shift {
   id: string;
@@ -28,14 +29,17 @@ type ShiftStatus = 'available' | 'pending' | 'completed' | 'cancelled';
 
 // Tıp alanları ve renkleri
 const medicalFields = [
-  { value: 'acil', label: 'Acil Servis', color: 'bg-red-500', icon: Activity },
-  { value: 'kardiyoloji', label: 'Kardiyoloji', color: 'bg-red-600', icon: Heart },
-  { value: 'nöroloji', label: 'Nöroloji', color: 'bg-purple-600', icon: Brain },
-  { value: 'göz', label: 'Göz Hastalıkları', color: 'bg-blue-500', icon: Eye },
-  { value: 'kadın', label: 'Kadın Hastalıkları', color: 'bg-pink-500', icon: Baby },
-  { value: 'ortodonti', label: 'Ortodonti', color: 'bg-teal-500', icon: Sparkles },
-  { value: 'dahiliye', label: 'Dahiliye', color: 'bg-green-600', icon: Stethoscope },
-  { value: 'farmakoloji', label: 'Farmakoloji', color: 'bg-orange-500', icon: Pill },
+  { value: 'acil1', label: 'Acil Dahiliye', color: '#e53935' },
+  { value: 'acil2', label: 'Acil Cerrahi', color: '#d32f2f' },
+  { value: 'acil3', label: 'Acil Pediatri', color: '#ff7043' },
+  { value: 'kardiyoloji', label: 'Kardiyoloji', color: '#c2185b' },
+  { value: 'psikyatri', label: 'Psikyatri', color: '#8e24aa' },
+  { value: 'gogus', label: 'Göğüs Hastalıkları', color: '#1976d2' },
+  { value: 'kadin', label: 'Kadın Hastalıkları VE Doğum', color: '#f06292' },
+  { value: 'ortodonti', label: 'Ortopedi ve Travmatoloj', color: '#00897b' },
+  { value: 'dahiliye', label: 'Dahiliye', color: '#43a047' },
+  { value: 'pediatri', label: 'Pediatri', color: '#fbc02d' },
+  { value: 'genel', label: 'Genel cerrahi', color: '#ffa000' },
 ];
 
 const ShiftOffers = () => {
@@ -312,22 +316,24 @@ const ShiftOffers = () => {
               return (
                 <Card 
                   key={shift.id} 
-                  className={`hover:shadow-lg transition-shadow relative overflow-hidden ${
-                    medicalFieldInfo ? `border-l-4 ${medicalFieldInfo.color.replace('bg-', 'border-')}` : ''
-                  }`}
+                  className="hover:shadow-lg transition-shadow relative overflow-hidden"
+                  style={{
+                    borderLeftColor: medicalFieldInfo?.color,
+                    borderLeftWidth: medicalFieldInfo ? '4px' : '1px'
+                  }}
                 >
-                  {/* Medical Field Badge */}
-                  {medicalFieldInfo && (
-                    <div className="absolute top-2 right-2">
-                      <div className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-white ${medicalFieldInfo.color}`}>
-                        {(() => {
-                          const IconComponent = medicalFieldInfo.icon;
-                          return <IconComponent className="h-3 w-3" />;
-                        })()}
-                        {medicalFieldInfo.label}
-                      </div>
-                    </div>
-                  )}
+                                     {/* Medical Field Badge */}
+                   {medicalFieldInfo && (
+                     <div className="absolute top-2 right-2">
+                       <div 
+                         className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-white"
+                         style={{ backgroundColor: medicalFieldInfo.color }}
+                       >
+                         <MedicalFieldIcon field={shift.medical_field} />
+                         {medicalFieldInfo.label}
+                       </div>
+                     </div>
+                   )}
 
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start gap-2">
