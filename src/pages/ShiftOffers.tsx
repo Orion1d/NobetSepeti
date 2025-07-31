@@ -29,7 +29,7 @@ type ShiftStatus = 'available' | 'pending' | 'completed' | 'cancelled';
 const ShiftOffers = () => {
   const [shifts, setShifts] = useState<Shift[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState<ShiftStatus | 'all'>('all');
+  const [priceSort, setPriceSort] = useState<'asc' | 'desc' | 'none'>('none');
   
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -41,23 +41,34 @@ const ShiftOffers = () => {
 
   useEffect(() => {
     fetchShifts();
-  }, [statusFilter]);
+  }, [priceSort]);
 
   const fetchShifts = async () => {
     try {
       let query = supabase
         .from('shifts')
         .select('*')
-        .order('created_at', { ascending: false });
-
-      if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
-      }
+        .eq('status', 'available')
+        .order('shift_date', { ascending: true }); // Default: tarihe göre sırala
 
       const { data, error } = await query;
 
       if (error) throw error;
-      setShifts(data || []);
+      
+      let sortedShifts = data || [];
+      
+      // Fiyat sıralaması uygula
+      if (priceSort !== 'none') {
+        sortedShifts = sortedShifts.sort((a, b) => {
+          if (priceSort === 'asc') {
+            return a.price - b.price;
+          } else {
+            return b.price - a.price;
+          }
+        });
+      }
+      
+      setShifts(sortedShifts);
     } catch (error: any) {
       toast({
         title: "Hata",
@@ -234,17 +245,15 @@ const ShiftOffers = () => {
         {/* Filter Section */}
         <div className="mb-6 flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Durum Filtresi:</span>
-            <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as ShiftStatus | 'all')}>
+            <span className="text-sm font-medium">Fiyat Sıralaması:</span>
+            <Select value={priceSort} onValueChange={(value) => setPriceSort(value as 'asc' | 'desc' | 'none')}>
               <SelectTrigger className="w-48">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tümü</SelectItem>
-                <SelectItem value="available">Müsait</SelectItem>
-                <SelectItem value="pending">Beklemede</SelectItem>
-                <SelectItem value="completed">Tamamlandı</SelectItem>
-                <SelectItem value="cancelled">İptal Edildi</SelectItem>
+                <SelectItem value="none">Tarihe Göre (Varsayılan)</SelectItem>
+                <SelectItem value="asc">Fiyat: Düşükten Yükseğe</SelectItem>
+                <SelectItem value="desc">Fiyat: Yüksekten Düşüğe</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -254,16 +263,14 @@ const ShiftOffers = () => {
           <div className="text-center py-12">
             <TrendingUp className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">
-              {statusFilter === 'all' ? 'Henüz nöbet teklifi yok' : `${getStatusText(statusFilter as ShiftStatus)} nöbet bulunamadı`}
+              Henüz müsait nöbet teklifi yok
             </h3>
             <p className="text-muted-foreground mb-6">
-              {statusFilter === 'all' ? 'İlk nöbet teklifini siz oluşturun!' : 'Farklı bir durum filtresi deneyin.'}
+              İlk nöbet teklifini siz oluşturun!
             </p>
-            {statusFilter === 'all' && (
-              <Button onClick={() => navigate('/create-shift')}>
-                Nöbet Teklifi Oluştur
-              </Button>
-            )}
+            <Button onClick={() => navigate('/create-shift')}>
+              Nöbet Teklifi Oluştur
+            </Button>
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -305,12 +312,7 @@ const ShiftOffers = () => {
                       </div>
                     )}
                     
-                    {shift.location && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                        <span>{shift.location}</span>
-                      </div>
-                    )}
+
                   </div>
 
                   {/* Action Buttons */}

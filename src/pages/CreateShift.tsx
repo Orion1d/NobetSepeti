@@ -18,7 +18,6 @@ const CreateShift = () => {
   const [shiftDate, setShiftDate] = useState('');
   const [shiftTime, setShiftTime] = useState('');
   const [duration, setDuration] = useState('');
-  const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [shiftId, setShiftId] = useState<string | null>(null);
@@ -44,7 +43,6 @@ const CreateShift = () => {
       setShiftDate(shiftData.shift_date);
       setShiftTime(shiftData.shift_time || '');
       setDuration(shiftData.duration || '');
-      setLocation(shiftData.location || '');
     }
   }, [location_obj.state]);
 
@@ -108,7 +106,7 @@ const CreateShift = () => {
             shift_date: shiftDate,
             shift_time: shiftTime || null,
             duration: duration || null,
-            location,
+            location: null,
           })
           .eq('id', shiftId)
           .eq('seller_id', user.id);
@@ -132,7 +130,7 @@ const CreateShift = () => {
               shift_date: shiftDate,
               shift_time: shiftTime || null,
               duration: duration || null,
-              location,
+              location: null,
             }
           ]);
 
@@ -204,40 +202,28 @@ const CreateShift = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="price">Fiyat (TL) *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    min="0"
-                    max="10000"
-                    step="1"
-                    value={price}
-                    onChange={(e) => {
-                      // Sadece tam sayıları kabul et ve maksimum 10000
-                      const value = e.target.value;
-                      if (value === '' || /^\d+$/.test(value)) {
-                        const numValue = parseInt(value) || 0;
-                        if (numValue <= 10000) {
-                          setPrice(value);
-                        }
+              <div className="space-y-2">
+                <Label htmlFor="price">Fiyat (TL) *</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min="0"
+                  max="10000"
+                  step="1"
+                  value={price}
+                  onChange={(e) => {
+                    // Sadece tam sayıları kabul et ve maksimum 10000
+                    const value = e.target.value;
+                    if (value === '' || /^\d+$/.test(value)) {
+                      const numValue = parseInt(value) || 0;
+                      if (numValue <= 10000) {
+                        setPrice(value);
                       }
-                    }}
-                    required
-                    placeholder="1500"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location">Hastane/Lokasyon</Label>
-                  <Input
-                    id="location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Örn: Ankara Şehir Hastanesi"
-                  />
-                </div>
+                    }
+                  }}
+                  required
+                  placeholder="1500"
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
