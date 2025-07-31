@@ -19,3 +19,9 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
+
+-- Add RLS policy to allow viewing all shifts for detail pages
+CREATE POLICY "Anyone can view all shifts for details" 
+ON public.shifts 
+FOR SELECT 
+USING (true);

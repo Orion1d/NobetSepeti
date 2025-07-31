@@ -28,19 +28,19 @@ interface Shift {
 type ShiftStatus = 'available' | 'pending' | 'completed' | 'cancelled';
 
 // Tıp alanları ve renkleri
-const medicalFields = [
-  { value: 'acil1', label: 'Acil Dahiliye', color: '#e53935' },
-  { value: 'acil2', label: 'Acil Cerrahi', color: '#d32f2f' },
-  { value: 'acil3', label: 'Acil Pediatri', color: '#ff7043' },
-  { value: 'kardiyoloji', label: 'Kardiyoloji', color: '#c2185b' },
-  { value: 'psikyatri', label: 'Psikyatri', color: '#8e24aa' },
-  { value: 'gogus', label: 'Göğüs Hastalıkları', color: '#1976d2' },
-  { value: 'kadin', label: 'Kadın Hastalıkları VE Doğum', color: '#f06292' },
-  { value: 'ortodonti', label: 'Ortopedi ve Travmatoloj', color: '#00897b' },
-  { value: 'dahiliye', label: 'Dahiliye', color: '#43a047' },
-  { value: 'pediatri', label: 'Pediatri', color: '#fbc02d' },
-  { value: 'genel', label: 'Genel cerrahi', color: '#ffa000' },
-];
+  const medicalFields = [
+    { value: 'acil1', label: 'Acil Dahiliye', color: '#e53935' },
+    { value: 'acil2', label: 'Acil Cerrahi', color: '#d32f2f' },
+    { value: 'acil3', label: 'Acil Pediatri', color: '#ff7043' },
+    { value: 'kardiyoloji', label: 'Kardiyoloji', color: '#c2185b' },
+    { value: 'psikyatri', label: 'Psikiyatri', color: '#8e24aa' },
+    { value: 'gogus', label: 'Göğüs Hastalıkları', color: '#1976d2' },
+    { value: 'kadin', label: 'Kadın ve Doğum Hastalıkları', color: '#f06292' },
+    { value: 'ortodonti', label: 'Ortopedi ve Travmatoloji', color: '#00897b' },
+    { value: 'dahiliye', label: 'Dahiliye', color: '#43a047' },
+    { value: 'pediatri', label: 'Pediatri', color: '#fbc02d' },
+    { value: 'genel', label: 'Genel Cerrahi', color: '#ffa000' },
+  ];
 
 const ShiftOffers = () => {
   const [shifts, setShifts] = useState<Shift[]>([]);

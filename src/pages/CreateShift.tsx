@@ -13,19 +13,19 @@ import { ArrowLeft } from 'lucide-react';
 import { MedicalFieldIcon, fieldIconMap } from '@/components/MedicalFieldIcon';
 
 // Tıp alanları ve renkleri
-const medicalFields = [
-  { value: 'acil1', label: 'Acil Dahiliye', color: '#e53935' },
-  { value: 'acil2', label: 'Acil Cerrahi', color: '#d32f2f' },
-  { value: 'acil3', label: 'Acil Pediatri', color: '#ff7043' },
-  { value: 'kardiyoloji', label: 'Kardiyoloji', color: '#c2185b' },
-  { value: 'psikyatri', label: 'Psikyatri', color: '#8e24aa' },
-  { value: 'gogus', label: 'Göğüs Hastalıkları', color: '#1976d2' },
-  { value: 'kadin', label: 'Kadın Hastalıkları VE Doğum', color: '#f06292' },
-  { value: 'ortodonti', label: 'Ortopedi ve Travmatoloj', color: '#00897b' },
-  { value: 'dahiliye', label: 'Dahiliye', color: '#43a047' },
-  { value: 'pediatri', label: 'Pediatri', color: '#fbc02d' },
-  { value: 'genel', label: 'Genel cerrahi', color: '#ffa000' },
-];
+            const medicalFields = [
+              { value: 'acil1', label: 'Acil Dahiliye', color: '#e53935' },
+              { value: 'acil2', label: 'Acil Cerrahi', color: '#d32f2f' },
+              { value: 'acil3', label: 'Acil Pediatri', color: '#ff7043' },
+              { value: 'kardiyoloji', label: 'Kardiyoloji', color: '#c2185b' },
+              { value: 'psikyatri', label: 'Psikiyatri', color: '#8e24aa' },
+              { value: 'gogus', label: 'Göğüs Hastalıkları', color: '#1976d2' },
+              { value: 'kadin', label: 'Kadın ve Doğum Hastalıkları', color: '#f06292' },
+              { value: 'ortodonti', label: 'Ortopedi ve Travmatoloji', color: '#00897b' },
+              { value: 'dahiliye', label: 'Dahiliye', color: '#43a047' },
+              { value: 'pediatri', label: 'Pediatri', color: '#fbc02d' },
+              { value: 'genel', label: 'Genel Cerrahi', color: '#ffa000' },
+            ];
 
 const CreateShift = () => {
   const [title, setTitle] = useState('');
@@ -198,41 +198,41 @@ const CreateShift = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Nöbet Başlığı * (Maksimum 50 karakter)</Label>
-                <Input
-                  id="title"
-                  value={title}
-                  onChange={(e) => {
-                    if (e.target.value.length <= 50) {
-                      setTitle(e.target.value);
-                    }
-                  }}
-                  required
-                  placeholder="Örn: Acil Servisi Gece Nöbeti"
-                  maxLength={50}
-                />
-                <div className="text-xs text-muted-foreground text-right">
-                  {title.length}/50
-                </div>
+                            <Label htmlFor="title">Nöbet Başlığı * (Maksimum 30 karakter)</Label>
+            <Input
+              id="title"
+              value={title}
+              onChange={(e) => {
+                if (e.target.value.length <= 30) {
+                  setTitle(e.target.value);
+                }
+              }}
+              required
+              placeholder="Örn: Acil Servisi Gece Nöbeti"
+              maxLength={30}
+            />
+            <div className="text-xs text-muted-foreground text-right">
+              {title.length}/30
+            </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Açıklama * (Maksimum 300 karakter)</Label>
+                <Label htmlFor="description">Açıklama * (Maksimum 100 karakter)</Label>
                 <Textarea
                   id="description"
                   value={description}
                   onChange={(e) => {
-                    if (e.target.value.length <= 300) {
+                    if (e.target.value.length <= 100) {
                       setDescription(e.target.value);
                     }
                   }}
                   required
                   placeholder="Nöbet detaylarını, koşullarını ve özel notlarınızı yazın..."
                   rows={4}
-                  maxLength={300}
+                  maxLength={100}
                 />
                 <div className="text-xs text-muted-foreground text-right">
-                  {description.length}/300
+                  {description.length}/100
                 </div>
               </div>
 
@@ -262,7 +262,7 @@ const CreateShift = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="shiftDate">Nöbet Tarihi *</Label>
+                  <Label htmlFor="shiftDate">Nöbet Tarihi * (Maksimum 1 ay sonra)</Label>
                   <Input
                     id="shiftDate"
                     type="date"
@@ -270,6 +270,7 @@ const CreateShift = () => {
                     onChange={(e) => setShiftDate(e.target.value)}
                     required
                     min={new Date().toISOString().split('T')[0]}
+                    max={new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
                   />
                 </div>
 

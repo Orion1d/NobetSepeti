@@ -202,15 +202,15 @@ const ShiftDetail = () => {
                     <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold text-white shadow-md mb-3"
                          style={{ backgroundColor: medicalFieldInfo.color }}>
                                              <MedicalFieldIcon field={shift.medical_field} variant="white" />
-                      <span>{medicalFieldInfo.color === '#1976d2' ? 'Göğüs Hastalıkları' : 
-                             medicalFieldInfo.color === '#43a047' ? 'Dahiliye' : 
-                             medicalFieldInfo.color === '#c2185b' ? 'Kardiyoloji' :
-                             medicalFieldInfo.color === '#8e24aa' ? 'Psikyatri' :
-                             medicalFieldInfo.color === '#f06292' ? 'Kadın Hastalıkları VE Doğum' :
-                             medicalFieldInfo.color === '#00897b' ? 'Ortopedi ve Travmatoloj' :
-                             medicalFieldInfo.color === '#fbc02d' ? 'Pediatri' :
-                             medicalFieldInfo.color === '#ffa000' ? 'Genel cerrahi' :
-                             'Tıp Alanı'}</span>
+                                             <span>{medicalFieldInfo.color === '#1976d2' ? 'Göğüs Hastalıkları' : 
+                              medicalFieldInfo.color === '#43a047' ? 'Dahiliye' : 
+                              medicalFieldInfo.color === '#c2185b' ? 'Kardiyoloji' :
+                              medicalFieldInfo.color === '#8e24aa' ? 'Psikiyatri' :
+                              medicalFieldInfo.color === '#f06292' ? 'Kadın ve Doğum Hastalıkları' :
+                              medicalFieldInfo.color === '#00897b' ? 'Ortopedi ve Travmatoloji' :
+                              medicalFieldInfo.color === '#fbc02d' ? 'Pediatri' :
+                              medicalFieldInfo.color === '#ffa000' ? 'Genel Cerrahi' :
+                              'Tıp Alanı'}</span>
                     </div>
                   )}
                 </div>
