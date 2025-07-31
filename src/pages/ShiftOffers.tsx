@@ -377,14 +377,15 @@ const ShiftOffers = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    {shift.status === 'available' && shift.seller_id !== user.id && (
-                      <div className="space-y-2">
-                        <Button 
-                          className="w-full" 
-                          onClick={() => handleBuyShift(shift.id)}
-                        >
-                          Nöbeti Satın Al
-                        </Button>
+                    <div className="space-y-2">
+                      <Button 
+                        className="w-full" 
+                        onClick={() => navigate(`/shift/${shift.id}`)}
+                      >
+                        İlanı Görüntüle
+                      </Button>
+                      
+                      {shift.status === 'available' && shift.seller_id !== user.id && (
                         <Button 
                           variant="outline"
                           className="w-full flex items-center gap-2"
@@ -393,27 +394,14 @@ const ShiftOffers = () => {
                           <MessageCircle className="h-4 w-4" />
                           Mesaj Gönder
                         </Button>
-                      </div>
-                    )}
-                    
-                    {shift.seller_id === user.id && shift.status === 'available' && (
-                      <div className="space-y-2">
-                        <div className="inline-flex items-center justify-center w-full rounded-full border px-2.5 py-0.5 text-xs font-semibold">
+                      )}
+                      
+                      {shift.seller_id === user.id && (
+                        <div className="inline-flex items-center justify-center w-full rounded-full border px-2.5 py-0.5 text-xs font-semibold text-muted-foreground">
                           Sizin teklifiniz
                         </div>
-                        <Button 
-                          variant="outline"
-                          className="w-full flex items-center gap-2"
-                          onClick={() => navigate('/messages')}
-                        >
-                          <MessageCircle className="h-4 w-4" />
-                          Mesajları Görüntüle
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* Status Actions */}
-                    {getStatusActions(shift)}
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               );

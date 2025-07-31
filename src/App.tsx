@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import CreateShift from "./pages/CreateShift";
 import ShiftOffers from "./pages/ShiftOffers";
+import ShiftDetail from "./pages/ShiftDetail";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
 import TermsOfService from "./pages/TermsOfService";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/create-shift" element={<CreateShift />} />
             <Route path="/shift-offers" element={<ShiftOffers />} />
+            <Route path="/shift/:shiftId" element={<ShiftDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/messages" element={<Messages />} />
 
