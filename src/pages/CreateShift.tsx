@@ -185,7 +185,7 @@ const CreateShift = () => {
             Geri Dön
           </Button>
           <h1 className="text-2xl font-bold text-foreground">
-            {editMode ? 'Nöbet Teklifini Düzenle' : 'Nöbet Teklifi Oluştur'}
+            {editMode ? 'Nöbet İlanını Düzenle' : 'Nöbet İlanı Oluştur'}
           </h1>
         </div>
       </header>
@@ -198,7 +198,7 @@ const CreateShift = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                            <Label htmlFor="title">Nöbet Başlığı * (Maksimum 30 karakter)</Label>
+                            <Label htmlFor="title">İlan Başlığı * (Maksimum 30 karakter)</Label>
             <Input
               id="title"
               value={title}
@@ -208,7 +208,7 @@ const CreateShift = () => {
                 }
               }}
               required
-              placeholder="Örn: Acil Servisi Gece Nöbeti"
+              placeholder="Örn: Acil Servisi Nöbeti"
               maxLength={30}
             />
             <div className="text-xs text-muted-foreground text-right">
@@ -227,7 +227,7 @@ const CreateShift = () => {
                     }
                   }}
                   required
-                  placeholder="Nöbet detaylarını, koşullarını ve özel notlarınızı yazın..."
+                  placeholder="Nöbetinizle ilgili detayları belirtiniz. Konum, nöbetin başlangıç ve bitiş saatleri, dikkat edilmesi gereken şeyler, vb."
                   rows={4}
                   maxLength={100}
                 />
@@ -317,8 +317,8 @@ const CreateShift = () => {
                       <SelectValue placeholder="Nöbet süresini seçin" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Gece 12'ye kadar.">Gece 12'ye kadar.</SelectItem>
-                      <SelectItem value="24 Saat">24 Saat</SelectItem>
+                      <SelectItem value="Yarım Gün">Yarım Gün</SelectItem>
+                      <SelectItem value="Tam Gün">Tam Gün</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
