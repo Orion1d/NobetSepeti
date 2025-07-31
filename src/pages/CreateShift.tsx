@@ -298,9 +298,9 @@ const CreateShift = () => {
                         return (
                           <SelectItem key={field.value} value={field.value}>
                             <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: field.color }}></div>
+                              <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: field.color }}></div>
                               <MedicalFieldIcon field={field.value} />
-                              <span>{field.label}</span>
+                              <span className="whitespace-nowrap">{field.label}</span>
                             </div>
                           </SelectItem>
                         );

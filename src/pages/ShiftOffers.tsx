@@ -316,30 +316,30 @@ const ShiftOffers = () => {
               return (
                 <Card 
                   key={shift.id} 
-                  className="hover:shadow-lg transition-shadow relative overflow-hidden"
+                  className="hover:shadow-lg transition-shadow relative overflow-hidden border-2"
                   style={{
-                    borderLeftColor: medicalFieldInfo?.color,
-                    borderLeftWidth: medicalFieldInfo ? '4px' : '1px'
+                    borderLeftColor: medicalFieldInfo?.color || '#e5e7eb',
+                    borderLeftWidth: medicalFieldInfo ? '6px' : '2px'
                   }}
                 >
                                      {/* Medical Field Badge */}
                    {medicalFieldInfo && (
-                     <div className="absolute top-2 right-2">
+                     <div className="absolute top-3 right-3 z-10">
                        <div 
-                         className="inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold text-white"
+                         className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-semibold text-white shadow-md"
                          style={{ backgroundColor: medicalFieldInfo.color }}
                        >
                          <MedicalFieldIcon field={shift.medical_field} />
-                         {medicalFieldInfo.label}
+                         <span className="whitespace-nowrap">{medicalFieldInfo.label}</span>
                        </div>
                      </div>
                    )}
 
                   <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start gap-2">
-                      <CardTitle className="text-lg flex-1">{shift.title}</CardTitle>
-                      <div className="flex flex-col items-end gap-2">
-                        <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold bg-green-100 text-green-800">
+                    <div className="flex justify-between items-start gap-3">
+                      <CardTitle className="text-lg flex-1 pr-4">{shift.title}</CardTitle>
+                      <div className="flex flex-col items-end gap-2 min-w-0">
+                        <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm font-bold bg-green-100 text-green-800 shadow-sm">
                           {shift.price.toFixed(0)} TL
                         </div>
                         {getStatusBadge(shift.status)}
