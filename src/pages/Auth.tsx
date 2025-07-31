@@ -10,6 +10,7 @@ import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { validateStudent } from '@/utils/studentValidation';
+import { supabase } from '@/integrations/supabase/client';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -25,6 +26,7 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [validationError, setValidationError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   
   const navigate = useNavigate();
   const { user, signIn, signUp } = useAuth();
@@ -99,6 +101,46 @@ const Auth = () => {
     }
 
     setLoading(false);
+  };
+
+  const handleResetPassword = async () => {
+    if (!email.trim()) {
+      toast({
+        title: "Hata",
+        description: "Lütfen email adresinizi girin.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?mode=signup`,
+      });
+
+      if (error) {
+        toast({
+          title: "Hata",
+          description: error.message,
+          variant: "destructive",
+        });
+      } else {
+        setResetEmailSent(true);
+        toast({
+          title: "Başarılı!",
+          description: "Şifre sıfırlama bağlantısı email adresinize gönderildi.",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Hata",
+        description: "Şifre sıfırlama işlemi sırasında bir hata oluştu.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -237,6 +279,21 @@ const Auth = () => {
                  </Button>
                </div>
              </div>
+             
+             {isLogin && (
+               <div className="text-right">
+                 <Button
+                   type="button"
+                   variant="link"
+                   size="sm"
+                   className="text-xs p-0 h-auto font-normal text-primary hover:underline"
+                   onClick={handleResetPassword}
+                   disabled={loading}
+                 >
+                   Şifremi Unuttum
+                 </Button>
+               </div>
+             )}
              {!isLogin && (
                <div className="flex items-center space-x-2">
                  <Checkbox 

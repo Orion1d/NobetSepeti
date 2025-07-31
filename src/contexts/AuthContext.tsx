@@ -45,10 +45,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
+    // Auto logout when user leaves the site
+    const handleBeforeUnload = () => {
+      if (user) {
+        supabase.auth.signOut();
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [session]);
+  }, [session, user]);
 
   const signIn = async (email: string, password: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
