@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Stethoscope, Users, Calendar, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Footer from '@/components/Footer';
+import Logo from '@/components/Logo';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -12,8 +13,7 @@ const Index = () => {
       <header className="container mx-auto px-4 py-6">
         <nav className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <Stethoscope className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground">Nöbet Sepeti</h1>
+            <h1 className="text-2xl font-bold text-primary">Nöbet Sepeti</h1>
           </div>
           <div className="space-x-4">
             <Button variant="outline" onClick={() => navigate('/auth')}>
@@ -28,6 +28,9 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-16">
+          <div className="flex justify-center mb-8">
+            <Logo width={200} height={80} className="h-20" />
+          </div>
           <h2 className="text-5xl font-bold mb-6 text-foreground">
             İnternler İçin <span className="text-primary">Nöbet Sepeti</span>
           </h2>
