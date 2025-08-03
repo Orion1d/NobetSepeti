@@ -50,11 +50,9 @@ const MarketHistory = () => {
 
   const fetchTransactions = async () => {
     try {
-      console.log('=== MARKET HISTORY DEBUG ===');
-      console.log('Fetching transactions for user:', user.id);
-      console.log('User object:', user);
+      setLoading(true);
       
-      // First, let's check if we can fetch basic shift data
+      // Fetch all shifts where user is involved (either as buyer or seller)
       const { data: allShifts, error: allShiftsError } = await supabase
         .from('shifts')
         .select('*')
@@ -62,80 +60,32 @@ const MarketHistory = () => {
         .order('created_at', { ascending: false });
 
       if (allShiftsError) {
-        console.error('All shifts error:', allShiftsError);
         throw allShiftsError;
       }
 
-      console.log('All shifts for user:', allShifts);
-      console.log('Total shifts found:', allShifts?.length || 0);
+      // Separate shifts where user is buyer vs seller
+      const purchasedShifts = allShifts?.filter(shift => shift.buyer_id === user.id) || [];
+      const soldShifts = allShifts?.filter(shift => shift.seller_id === user.id && shift.buyer_id !== null) || [];
 
-      // Check specific buyer_id matches
-      const buyerShifts = allShifts?.filter(shift => shift.buyer_id === user.id) || [];
-      console.log('Shifts where user is buyer:', buyerShifts);
-      console.log('Buyer shifts count:', buyerShifts.length);
+      // Get unique user IDs for profile lookups
+      const buyerIds = [...new Set(purchasedShifts.map(shift => shift.seller_id))];
+      const sellerIds = [...new Set(soldShifts.map(shift => shift.buyer_id))];
 
-      // Now let's try to fetch with profiles
-      const { data: salesData, error: salesError } = await supabase
-        .from('shifts')
-        .select(`
-          *,
-          buyer:profiles(full_name, user_id)
-        `)
-        .eq('seller_id', user.id)
-        .not('buyer_id', 'is', null)
-        .order('created_at', { ascending: false });
+      // Fetch profiles for buyers and sellers
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('user_id, full_name')
+        .in('user_id', [...buyerIds, ...sellerIds]);
 
-      if (salesError) {
-        console.error('Sales error:', salesError);
-        // Don't throw error, just log it
-        console.log('Sales data will be empty due to error');
+      if (profilesError) {
+        throw profilesError;
       }
 
-      console.log('Sales data:', salesData);
+      // Create a map for quick profile lookups
+      const profileMap = new Map(profiles?.map(profile => [profile.user_id, profile.full_name]) || []);
 
-      // Fetch shifts where user is buyer (purchases)
-      const { data: purchasesData, error: purchasesError } = await supabase
-        .from('shifts')
-        .select(`
-          *,
-          seller:profiles(full_name, user_id)
-        `)
-        .eq('buyer_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (purchasesError) {
-        console.error('Purchases error:', purchasesError);
-        // Don't throw error, just log it
-        console.log('Purchases data will be empty due to error');
-      }
-
-      console.log('Purchases data:', purchasesData);
-      console.log('Purchases count:', purchasesData?.length || 0);
-
-      // Combine and format transactions
-      const salesTransactions: Transaction[] = (salesData || []).map(shift => ({
-        id: shift.id,
-        type: 'sale' as const,
-        shift: {
-          id: shift.id,
-          title: shift.title,
-          price: shift.price,
-          shift_date: shift.shift_date,
-          shift_time: shift.shift_time,
-          medical_field: shift.medical_field,
-          status: shift.status,
-          created_at: shift.created_at
-        },
-        partner: {
-          full_name: shift.buyer?.full_name || 'Bilinmeyen',
-          user_id: shift.buyer?.user_id || ''
-        },
-        transaction_date: shift.created_at,
-        status: shift.status === 'completed' ? 'completed' : 
-                shift.status === 'cancelled' ? 'cancelled' : 'pending'
-      }));
-
-      const purchaseTransactions: Transaction[] = (purchasesData || []).map(shift => ({
+      // Format transactions
+      const purchaseTransactions: Transaction[] = purchasedShifts.map(shift => ({
         id: shift.id,
         type: 'purchase' as const,
         shift: {
@@ -149,21 +99,40 @@ const MarketHistory = () => {
           created_at: shift.created_at
         },
         partner: {
-          full_name: shift.seller?.full_name || 'Bilinmeyen',
-          user_id: shift.seller?.user_id || ''
+          full_name: profileMap.get(shift.seller_id) || 'Bilinmeyen',
+          user_id: shift.seller_id
         },
         transaction_date: shift.created_at,
         status: shift.status === 'completed' ? 'completed' : 
                 shift.status === 'cancelled' ? 'cancelled' : 'pending'
       }));
 
-      const allTransactions = [...salesTransactions, ...purchaseTransactions].sort((a, b) => 
+      const saleTransactions: Transaction[] = soldShifts.map(shift => ({
+        id: shift.id,
+        type: 'sale' as const,
+        shift: {
+          id: shift.id,
+          title: shift.title,
+          price: shift.price,
+          shift_date: shift.shift_date,
+          shift_time: shift.shift_time,
+          medical_field: shift.medical_field,
+          status: shift.status,
+          created_at: shift.created_at
+        },
+        partner: {
+          full_name: profileMap.get(shift.buyer_id!) || 'Bilinmeyen',
+          user_id: shift.buyer_id!
+        },
+        transaction_date: shift.created_at,
+        status: shift.status === 'completed' ? 'completed' : 
+                shift.status === 'cancelled' ? 'cancelled' : 'pending'
+      }));
+
+      const allTransactions = [...purchaseTransactions, ...saleTransactions].sort((a, b) => 
         new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
       );
 
-      console.log('All transactions:', allTransactions);
-      console.log('Total transactions:', allTransactions.length);
-      console.log('=== END MARKET HISTORY DEBUG ===');
       setTransactions(allTransactions);
     } catch (error: any) {
       console.error('Error in fetchTransactions:', error);
@@ -302,22 +271,17 @@ const MarketHistory = () => {
                 <TabsTrigger value="purchases">Alımlarım</TabsTrigger>
               </TabsList>
 
-              <TabsContent value={filter} className="mt-6">
+              <TabsContent value="all" className="mt-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Filter className="h-5 w-5" />
-                      İşlem Geçmişi ({filteredTransactions.length})
-                    </CardTitle>
+                    <CardTitle>İşlem Geçmişi ({filteredTransactions.length})</CardTitle>
                   </CardHeader>
                   <CardContent>
                     {filteredTransactions.length === 0 ? (
                       <div className="text-center py-8">
-                        <Package className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                        <TrendingUp className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                         <p className="text-muted-foreground mb-4">
-                          {filter === 'all' && 'Henüz işlem geçmişiniz yok.'}
-                          {filter === 'sales' && 'Henüz satış yapmadınız.'}
-                          {filter === 'purchases' && 'Henüz alım yapmadınız.'}
+                          Henüz işlem geçmişiniz bulunmuyor.
                         </p>
                         <Button onClick={() => navigate('/shift-offers')}>
                           Nöbet Tekliflerini Gör
@@ -379,6 +343,206 @@ const MarketHistory = () => {
                                     transaction.type === 'sale' ? 'text-green-600' : 'text-blue-600'
                                   }`}>
                                     {transaction.type === 'sale' ? '+' : '-'}{transaction.shift.price} ₺
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex gap-2 justify-end">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => navigate(`/shift/${transaction.shift.id}`)}
+                                    >
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => navigate('/messages')}
+                                    >
+                                      <MessageCircle className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="sales" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Satışlarım ({transactions.filter(t => t.type === 'sale').length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {transactions.filter(t => t.type === 'sale').length === 0 ? (
+                      <div className="text-center py-8">
+                        <TrendingUp className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">
+                          Henüz satış yapmadınız.
+                        </p>
+                        <Button onClick={() => navigate('/create-shift')}>
+                          İlan Oluştur
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>İşlem</TableHead>
+                              <TableHead>Nöbet</TableHead>
+                              <TableHead>Karşı Taraf</TableHead>
+                              <TableHead>Tarih</TableHead>
+                              <TableHead>Durum</TableHead>
+                              <TableHead className="text-right">Fiyat</TableHead>
+                              <TableHead className="text-right">İşlemler</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {transactions.filter(t => t.type === 'sale').map((transaction) => (
+                              <TableRow key={transaction.id}>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    {getTypeBadge(transaction.type)}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="max-w-xs">
+                                    <p className="font-medium truncate">{transaction.shift.title}</p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                      <Calendar className="h-3 w-3" />
+                                      <span>{formatDate(transaction.shift.shift_date)}</span>
+                                      {transaction.shift.shift_time && (
+                                        <>
+                                          <Clock className="h-3 w-3" />
+                                          <span>{formatTime(transaction.shift.shift_time)}</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-muted-foreground" />
+                                    <span className="truncate max-w-32">{transaction.partner.full_name}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="text-sm text-muted-foreground">
+                                    {formatDate(transaction.transaction_date)}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  {getStatusBadge(transaction.status)}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <span className="font-semibold text-green-600">
+                                    +{transaction.shift.price} ₺
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <div className="flex gap-2 justify-end">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => navigate(`/shift/${transaction.shift.id}`)}
+                                    >
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => navigate('/messages')}
+                                    >
+                                      <MessageCircle className="h-3 w-3" />
+                                    </Button>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="purchases" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Alımlarım ({transactions.filter(t => t.type === 'purchase').length})</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {transactions.filter(t => t.type === 'purchase').length === 0 ? (
+                      <div className="text-center py-8">
+                        <ShoppingCart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-4">
+                          Henüz alım yapmadınız.
+                        </p>
+                        <Button onClick={() => navigate('/shift-offers')}>
+                          Nöbet Tekliflerini Gör
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>İşlem</TableHead>
+                              <TableHead>Nöbet</TableHead>
+                              <TableHead>Karşı Taraf</TableHead>
+                              <TableHead>Tarih</TableHead>
+                              <TableHead>Durum</TableHead>
+                              <TableHead className="text-right">Fiyat</TableHead>
+                              <TableHead className="text-right">İşlemler</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {transactions.filter(t => t.type === 'purchase').map((transaction) => (
+                              <TableRow key={transaction.id}>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    {getTypeBadge(transaction.type)}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="max-w-xs">
+                                    <p className="font-medium truncate">{transaction.shift.title}</p>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                      <Calendar className="h-3 w-3" />
+                                      <span>{formatDate(transaction.shift.shift_date)}</span>
+                                      {transaction.shift.shift_time && (
+                                        <>
+                                          <Clock className="h-3 w-3" />
+                                          <span>{formatTime(transaction.shift.shift_time)}</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex items-center gap-2">
+                                    <User className="h-4 w-4 text-muted-foreground" />
+                                    <span className="truncate max-w-32">{transaction.partner.full_name}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <div className="text-sm text-muted-foreground">
+                                    {formatDate(transaction.transaction_date)}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  {getStatusBadge(transaction.status)}
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <span className="font-semibold text-blue-600">
+                                    -{transaction.shift.price} ₺
                                   </span>
                                 </TableCell>
                                 <TableCell className="text-right">

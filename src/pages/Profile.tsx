@@ -103,24 +103,42 @@ const Profile = () => {
 
   const fetchPurchasedShifts = async () => {
     try {
-      console.log('Fetching purchased shifts for user:', user.id);
-      
+      // Fetch purchased shifts with basic query
       const { data, error } = await supabase
         .from('shifts')
-        .select(`
-          *,
-          seller:profiles!shifts_seller_id_fkey(full_name)
-        `)
+        .select('*')
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error fetching purchased shifts:', error);
         throw error;
       }
-      
-      console.log('Purchased shifts data:', data);
-      setPurchasedShifts(data || []);
+
+      // If we have shifts, fetch seller profiles separately
+      if (data && data.length > 0) {
+        const sellerIds = [...new Set(data.map(shift => shift.seller_id))];
+        
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('user_id, full_name')
+          .in('user_id', sellerIds);
+
+        if (!profilesError && profiles) {
+          const profileMap = new Map(profiles.map(profile => [profile.user_id, profile.full_name]));
+          
+          // Add seller names to shifts
+          const shiftsWithSellers = data.map(shift => ({
+            ...shift,
+            seller: { full_name: profileMap.get(shift.seller_id) || 'Bilinmeyen' }
+          }));
+          
+          setPurchasedShifts(shiftsWithSellers);
+        } else {
+          setPurchasedShifts(data);
+        }
+      } else {
+        setPurchasedShifts(data || []);
+      }
     } catch (error: any) {
       console.error('Error fetching purchased shifts:', error);
     }
