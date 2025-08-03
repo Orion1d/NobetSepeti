@@ -7,6 +7,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Plus, ShoppingCart, LogOut, User, Package, MessageCircle, Calendar, Clock, MapPin } from 'lucide-react';
 import Footer from '@/components/Footer';
+import { Badge } from '@/components/ui/badge';
+import { Eye } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
@@ -14,7 +16,6 @@ const Dashboard = () => {
   const { toast } = useToast();
   const [purchasedShifts, setPurchasedShifts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -61,8 +62,6 @@ const Dashboard = () => {
     return timeString.slice(0, 5);
   };
 
-
-
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border">
@@ -76,6 +75,22 @@ const Dashboard = () => {
             >
               <User className="h-4 w-4" />
               Profil
+            </Button>
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/messages')}
+              className="flex items-center gap-2"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Mesajlar
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/create-shift')}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Nöbet Sat
             </Button>
             <Button 
               variant="outline" 
@@ -96,23 +111,6 @@ const Dashboard = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/create-shift')}>
-            <CardHeader className="text-center">
-              <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                <Plus className="h-8 w-8 text-primary" />
-              </div>
-              <CardTitle className="text-xl">Nöbetimi Satmak İstiyorum</CardTitle>
-              <CardDescription>
-                Nöbet ilanınızı oluşturun ve diğer internlere satın
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" size="lg">
-                Nöbet İlanı Oluştur
-              </Button>
-            </CardContent>
-          </Card>
-
           <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/shift-offers')}>
             <CardHeader className="text-center">
               <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
@@ -126,6 +124,23 @@ const Dashboard = () => {
             <CardContent>
               <Button className="w-full" size="lg">
                 Nöbet Tekliflerini Gör
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/market-history')}>
+            <CardHeader className="text-center">
+              <div className="mx-auto w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mb-4">
+                <Calendar className="h-8 w-8 text-secondary-foreground" />
+              </div>
+              <CardTitle className="text-xl">Alım-Satım Geçmişi</CardTitle>
+              <CardDescription>
+                Tüm işlemlerinizi ve geçmişinizi görüntüleyin
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" size="lg" variant="outline">
+                Geçmişi Görüntüle
               </Button>
             </CardContent>
           </Card>
@@ -159,49 +174,55 @@ const Dashboard = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="text-lg">{shift.title}</CardTitle>
-                        <CardDescription>
-                          Satıcı: {shift.seller?.full_name || 'Bilinmeyen'}
+                        <CardDescription className="mt-2">
+                          {shift.description}
                         </CardDescription>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-lg font-semibold text-primary">
-                          {shift.price.toFixed(0)} TL
-                        </div>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="text-sm text-muted-foreground space-y-1">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-3 w-3" />
-                        <span>{formatDate(shift.shift_date)}</span>
-                      </div>
-                      
-                      {shift.shift_time && (
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-3 w-3" />
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="h-4 w-4" />
+                          <span>{formatDate(shift.shift_date)}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="h-4 w-4" />
                           <span>{formatTime(shift.shift_time)}</span>
                         </div>
-                      )}
+                      </div>
                       
-                      {shift.location && (
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-3 w-3" />
-                          <span>{shift.location}</span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <User className="h-4 w-4" />
+                          <span>Satıcı: {shift.seller?.full_name}</span>
                         </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex gap-2 pt-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex items-center gap-1"
-                        onClick={() => navigate('/messages')}
-                      >
-                        <MessageCircle className="h-3 w-3" />
-                        Mesaj Gönder
-                      </Button>
+                        <Badge variant="secondary" className="text-sm">
+                          {shift.price} ₺
+                        </Badge>
+                      </div>
+
+                      <div className="flex gap-2 mt-4">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => navigate(`/shift/${shift.id}`)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Detayları Gör
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => navigate('/messages')}
+                        >
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Mesaj
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -209,7 +230,6 @@ const Dashboard = () => {
             </div>
           )}
         </div>
-
       </main>
 
       <Footer />

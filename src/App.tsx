@@ -12,6 +12,7 @@ import ShiftOffers from "./pages/ShiftOffers";
 import ShiftDetail from "./pages/ShiftDetail";
 import Profile from "./pages/Profile";
 import Messages from "./pages/Messages";
+import MarketHistory from "./pages/MarketHistory";
 import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/shift/:shiftId" element={<ShiftDetail />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/messages" element={<Messages />} />
+            <Route path="/market-history" element={<MarketHistory />} />
 
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/faq" element={<FAQ />} />
