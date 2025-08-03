@@ -50,7 +50,9 @@ const MarketHistory = () => {
 
   const fetchTransactions = async () => {
     try {
+      console.log('=== MARKET HISTORY DEBUG ===');
       console.log('Fetching transactions for user:', user.id);
+      console.log('User object:', user);
       
       // First, let's check if we can fetch basic shift data
       const { data: allShifts, error: allShiftsError } = await supabase
@@ -65,6 +67,12 @@ const MarketHistory = () => {
       }
 
       console.log('All shifts for user:', allShifts);
+      console.log('Total shifts found:', allShifts?.length || 0);
+
+      // Check specific buyer_id matches
+      const buyerShifts = allShifts?.filter(shift => shift.buyer_id === user.id) || [];
+      console.log('Shifts where user is buyer:', buyerShifts);
+      console.log('Buyer shifts count:', buyerShifts.length);
 
       // Now let's try to fetch with profiles
       const { data: salesData, error: salesError } = await supabase
@@ -102,6 +110,7 @@ const MarketHistory = () => {
       }
 
       console.log('Purchases data:', purchasesData);
+      console.log('Purchases count:', purchasesData?.length || 0);
 
       // Combine and format transactions
       const salesTransactions: Transaction[] = (salesData || []).map(shift => ({
@@ -153,6 +162,8 @@ const MarketHistory = () => {
       );
 
       console.log('All transactions:', allTransactions);
+      console.log('Total transactions:', allTransactions.length);
+      console.log('=== END MARKET HISTORY DEBUG ===');
       setTransactions(allTransactions);
     } catch (error: any) {
       console.error('Error in fetchTransactions:', error);

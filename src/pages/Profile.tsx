@@ -103,6 +103,8 @@ const Profile = () => {
 
   const fetchPurchasedShifts = async () => {
     try {
+      console.log('Fetching purchased shifts for user:', user.id);
+      
       const { data, error } = await supabase
         .from('shifts')
         .select(`
@@ -112,7 +114,12 @@ const Profile = () => {
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching purchased shifts:', error);
+        throw error;
+      }
+      
+      console.log('Purchased shifts data:', data);
       setPurchasedShifts(data || []);
     } catch (error: any) {
       console.error('Error fetching purchased shifts:', error);
