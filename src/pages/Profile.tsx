@@ -114,21 +114,23 @@ const Profile = () => {
 
       if (error) throw error;
       setPurchasedShifts(data || []);
-      
-      // Calculate stats
-      const totalEarnings = myShifts.reduce((sum, shift) => sum + shift.price, 0);
-      const totalSpent = (data || []).reduce((sum, shift) => sum + shift.price, 0);
-      
-      setStats({
-        totalShifts: myShifts.length,
-        totalPurchases: (data || []).length,
-        totalEarnings,
-        totalSpent
-      });
     } catch (error: any) {
       console.error('Error fetching purchased shifts:', error);
     }
   };
+
+  // Update stats when myShifts or purchasedShifts change
+  useEffect(() => {
+    const totalEarnings = myShifts.reduce((sum, shift) => sum + shift.price, 0);
+    const totalSpent = purchasedShifts.reduce((sum, shift) => sum + shift.price, 0);
+    
+    setStats({
+      totalShifts: myShifts.length,
+      totalPurchases: purchasedShifts.length,
+      totalEarnings,
+      totalSpent
+    });
+  }, [myShifts, purchasedShifts]);
 
   const handleChangePassword = async () => {
     try {
