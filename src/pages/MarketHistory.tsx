@@ -50,6 +50,8 @@ const MarketHistory = () => {
 
   const fetchTransactions = async () => {
     try {
+      console.log('Fetching transactions for user:', user.id);
+      
       // Fetch shifts where user is seller (sales)
       const { data: salesData, error: salesError } = await supabase
         .from('shifts')
@@ -61,7 +63,12 @@ const MarketHistory = () => {
         .not('buyer_id', 'is', null)
         .order('created_at', { ascending: false });
 
-      if (salesError) throw salesError;
+      if (salesError) {
+        console.error('Sales error:', salesError);
+        throw salesError;
+      }
+
+      console.log('Sales data:', salesData);
 
       // Fetch shifts where user is buyer (purchases)
       const { data: purchasesData, error: purchasesError } = await supabase
@@ -73,7 +80,12 @@ const MarketHistory = () => {
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (purchasesError) throw purchasesError;
+      if (purchasesError) {
+        console.error('Purchases error:', purchasesError);
+        throw purchasesError;
+      }
+
+      console.log('Purchases data:', purchasesData);
 
       // Combine and format transactions
       const salesTransactions: Transaction[] = (salesData || []).map(shift => ({
@@ -120,10 +132,14 @@ const MarketHistory = () => {
                 shift.status === 'cancelled' ? 'cancelled' : 'pending'
       }));
 
-      setTransactions([...salesTransactions, ...purchaseTransactions].sort((a, b) => 
+      const allTransactions = [...salesTransactions, ...purchaseTransactions].sort((a, b) => 
         new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
-      ));
+      );
+
+      console.log('All transactions:', allTransactions);
+      setTransactions(allTransactions);
     } catch (error: any) {
+      console.error('Error in fetchTransactions:', error);
       toast({
         title: "Hata",
         description: "İşlem geçmişi yüklenirken bir hata oluştu.",
