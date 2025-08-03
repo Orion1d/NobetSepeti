@@ -29,7 +29,7 @@ const Index = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="text-center mb-16">
           <div className="flex justify-center mb-8">
-            <Logo width={200} height={80} className="h-20" />
+            <Logo size={180} />
           </div>
           <h2 className="text-5xl font-bold mb-6 text-foreground">
             İnternler İçin <span className="text-primary">Nöbet Sepeti</span>
