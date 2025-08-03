@@ -52,12 +52,26 @@ const MarketHistory = () => {
     try {
       console.log('Fetching transactions for user:', user.id);
       
-      // Fetch shifts where user is seller (sales)
+      // First, let's check if we can fetch basic shift data
+      const { data: allShifts, error: allShiftsError } = await supabase
+        .from('shifts')
+        .select('*')
+        .or(`seller_id.eq.${user.id},buyer_id.eq.${user.id}`)
+        .order('created_at', { ascending: false });
+
+      if (allShiftsError) {
+        console.error('All shifts error:', allShiftsError);
+        throw allShiftsError;
+      }
+
+      console.log('All shifts for user:', allShifts);
+
+      // Now let's try to fetch with profiles
       const { data: salesData, error: salesError } = await supabase
         .from('shifts')
         .select(`
           *,
-          buyer:profiles!shifts_buyer_id_fkey(full_name, user_id)
+          buyer:profiles(full_name, user_id)
         `)
         .eq('seller_id', user.id)
         .not('buyer_id', 'is', null)
@@ -65,7 +79,8 @@ const MarketHistory = () => {
 
       if (salesError) {
         console.error('Sales error:', salesError);
-        throw salesError;
+        // Don't throw error, just log it
+        console.log('Sales data will be empty due to error');
       }
 
       console.log('Sales data:', salesData);
@@ -75,14 +90,15 @@ const MarketHistory = () => {
         .from('shifts')
         .select(`
           *,
-          seller:profiles!shifts_seller_id_fkey(full_name, user_id)
+          seller:profiles(full_name, user_id)
         `)
         .eq('buyer_id', user.id)
         .order('created_at', { ascending: false });
 
       if (purchasesError) {
         console.error('Purchases error:', purchasesError);
-        throw purchasesError;
+        // Don't throw error, just log it
+        console.log('Purchases data will be empty due to error');
       }
 
       console.log('Purchases data:', purchasesData);
